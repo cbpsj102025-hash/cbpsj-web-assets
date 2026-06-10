@@ -215,8 +215,8 @@
        GROUP 1 — SCOLIOSIS BRACE RESULTS
   ════════════════════════════════════════════════ -->
   <div class="results-group">
-    <div class="group-heading">ScoliBrace Results</div>
-    <p class="group-subheading">In-brace X-ray correction documented with PostureRay imaging — Muscat, Oman</p>
+    <div class="group-heading" id="groupHeading" style="display:none"></div>
+    <p class="group-subheading" id="groupSub" style="display:none"></p>
 
     <div class="cards-grid" id="cardsGrid">
 
@@ -283,7 +283,7 @@ Following custom ScoliBrace fitting by Dr. Richard Marchetti, in-brace PostureRa
             </div>
             <div class="xray-box">
               <div class="xray-label after">After — Apr 2026</div>
-              <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/irajab_munaxali_13_4_2026_er315ll-L5T9D634Tlvn03tL.jpg" alt="After CBP full spine X-ray — structural correction at 5 months, Apr 2026">
+              <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/irajab_munaxali_13_4_2026_er315lf-6t0mW9FOPWpuUpvN.jpg" alt="After CBP full spine X-ray — structural correction at 5 months, Apr 2026">
             </div>
           </div>
 
@@ -640,11 +640,17 @@ At 3 months and 24 visits, the Cobb angle reduced from 17.3° to 10.9° right �
   const buttons  = document.querySelectorAll('.filter-btn');
   const cards    = document.querySelectorAll('.case-card');
   const noResults = document.getElementById('noResults');
+  const groupHeading = document.getElementById('groupHeading');
+  const groupSub = document.getElementById('groupSub');
+  const HEADINGS = {'all':'','scoliosis':'Scoliosis Results','scoliosis-brace':'ScoliBrace Results','full-spine':'Full Spine Results','cervical':'Cervical Spine Results','thoracic':'Thoracic Spine Results','lumbar':'Lumbar Spine Results'};
+  const SUBS = {'all':'','scoliosis':'Before & after X-ray correction documented with PostureRay imaging — Muscat, Oman','scoliosis-brace':'In-brace X-ray correction documented with PostureRay imaging — Muscat, Oman','full-spine':'Before & after full-spine correction documented with PostureRay imaging — Muscat, Oman','cervical':'Before & after cervical correction documented with PostureRay imaging — Muscat, Oman','thoracic':'Before & after thoracic correction documented with PostureRay imaging — Muscat, Oman','lumbar':'Before & after lumbar correction documented with PostureRay imaging — Muscat, Oman'};
+  function updateHeading(f){var h=HEADINGS.hasOwnProperty(f)?HEADINGS[f]:'';var s=SUBS.hasOwnProperty(f)?SUBS[f]:'';if(groupHeading){groupHeading.textContent=h;groupHeading.style.display=h?'inline-block':'none';}if(groupSub){groupSub.textContent=s;groupSub.style.display=s?'block':'none';}}
 
   buttons.forEach(btn => {
     btn.addEventListener('click', () => {
       buttons.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      updateHeading(btn.dataset.filter);
 
       const filter = btn.dataset.filter;
       let visibleCount = 0;
@@ -661,6 +667,7 @@ At 3 months and 24 visits, the Cobb angle reduced from 17.3° to 10.9° right �
       noResults.style.display = visibleCount === 0 ? 'block' : 'none';
     });
   });
+  updateHeading('all');
 </script>
 
 </body>
