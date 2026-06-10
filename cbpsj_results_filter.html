@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patient Results Filter — CBP Precision Spine Center</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: #f5f5f5; padding: 40px 20px; }
+  .results-section { max-width: 1100px; margin: 0 auto; }
+
+  /* ── SECTION HEADINGS ── */
+  .results-group { margin-bottom: 60px; }
+  .group-heading {
+    font-size: 22px;
+    font-weight: 600;
+    color: #2C3E45;
+    margin-bottom: 6px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #16B6BA;
+    display: inline-block;
+  }
+  .group-subheading {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 28px;
+    margin-top: 6px;
+  }
+
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+  .filter-btn {
+    padding: 9px 22px;
+    border-radius: 30px;
+    border: 1.5px solid #16B6BA;
+    background: #fff;
+    color: #16B6BA;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    font-family: 'Inter', sans-serif;
+  }
+  .filter-btn:hover { background: #e6f8f8; }
+  .filter-btn.active { background: #16B6BA; color: #fff; }
+
+  /* ── CARDS GRID ── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  /* ── SINGLE CARD ── */
+  .case-card {
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #e5e5e5;
+  }
+  .case-card.hidden { display: none; }
+
+  .card-header { background: #16B6BA; padding: 14px 18px; }
+  .card-header.charcoal { background: #2C3E45; }
+  .card-header.brace { background: #1a7a6e; }
+  .card-header.full-spine { background: #2d4a7a; }
+  .card-header.cervical { background: #5a2d82; }
+  .card-header.lumbar { background: #7a4a1a; }
+  .card-header.thoracic { background: #1a5a4a; }
+
+  /* ── METRICS TABLE (for full spine ARA / TZ data) ── */
+  .metrics-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 14px; }
+  .metrics-table th {
+    background: #f0f0f0; padding: 6px 8px; text-align: left;
+    font-weight: 600; color: #555; border-bottom: 1px solid #e0e0e0;
+  }
+  .metrics-table td { padding: 6px 8px; border-bottom: 1px solid #f0f0f0; color: #444; vertical-align: middle; }
+  .metrics-table tr:last-child td { border-bottom: none; }
+  .metrics-table .region { font-weight: 600; color: #2C3E45; }
+  .metrics-table .val-before { color: #888; }
+  .metrics-table .val-after { color: #2d4a7a; font-weight: 600; }
+  .metrics-table .val-normal { color: #bbb; font-size: 11px; }
+  .metrics-label { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 5px; }
+
+  .card-case-num {
+    font-size: 11px;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.35;
+  }
+
+  .card-body { padding: 18px; }
+
+  /* ── XRAY IMAGES ── */
+  .xray-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .xray-box { background: #f0f0f0; border-radius: 8px; overflow: hidden; }
+  .xray-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: center;
+    padding: 5px;
+  }
+  .xray-label.before { background: #f0f0f0; color: #888; }
+  .xray-label.after  { background: #e0f5f5; color: #16B6BA; }
+  .xray-label.in-brace { background: #d4f0ec; color: #1a7a6e; }
+  .xray-img { width: 100%; height: 180px; object-fit: cover; display: block; }
+  .xray-placeholder {
+    width: 100%; height: 180px;
+    display: flex; align-items: center; justify-content: center;
+    background: #f0f0f0; color: #bbb; font-size: 12px;
+    text-align: center; padding: 10px; line-height: 1.5;
+  }
+
+  /* ── BRACE BADGE ── */
+  .brace-badge {
+    display: inline-block;
+    background: #d4f0ec;
+    color: #1a7a6e;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── CLINICAL TEXT ── */
+  .card-description {
+    font-size: 13px;
+    line-height: 1.75;
+    color: #444;
+    margin-bottom: 16px;
+  }
+
+  /* ── STAT BOXES ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .stats-row.two-col { grid-template-columns: repeat(2, 1fr); }
+  .stat-box {
+    background: #f7f7f7;
+    border-radius: 8px;
+    padding: 10px 8px;
+    text-align: center;
+  }
+  .stat-box.highlight {
+    background: #e6f8f8;
+    border: 1px solid #b2e8e8;
+  }
+  .stat-box.highlight-brace {
+    background: #d4f0ec;
+    border: 1px solid #9dddd4;
+  }
+  .stat-label { font-size: 10px; color: #999; margin-bottom: 4px; line-height: 1.3; }
+  .stat-value { font-size: 18px; font-weight: 600; color: #2C3E45; }
+  .stat-box.highlight .stat-value { color: #16B6BA; }
+  .stat-box.highlight-brace .stat-value { color: #1a7a6e; }
+
+  /* ── NO RESULTS ── */
+  .no-results {
+    display: none;
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+    font-size: 14px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 700px) {
+    .cards-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="results-section">
+
+  <!-- ════════════════════════════════════════════════
+       FILTER BAR — shared across both sections
+  ════════════════════════════════════════════════ -->
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="scoliosis">Scoliosis</button>
+    <button class="filter-btn" data-filter="scoliosis-brace">Scoliosis Brace</button>
+    <button class="filter-btn" data-filter="full-spine">Full Spine</button>
+    <button class="filter-btn" data-filter="cervical">Cervical</button>
+    <button class="filter-btn" data-filter="thoracic">Thoracic</button>
+    <button class="filter-btn" data-filter="lumbar">Lumbar</button>
+  </div>
+
+  <!-- ════════════════════════════════════════════════
+       GROUP 1 — SCOLIOSIS BRACE RESULTS
+  ════════════════════════════════════════════════ -->
+  <div class="results-group">
+    <div class="group-heading">ScoliBrace Results</div>
+    <p class="group-subheading">In-brace X-ray correction documented with PostureRay imaging — Muscat, Oman</p>
+
+    <div class="cards-grid" id="cardsGrid">
+
+      <!-- ══ SCOLIOSIS BRACE CASE 01 — REAL DATA ══ -->
+      <div class="case-card" data-category="scoliosis-brace">
+        <div class="card-header brace">
+          <div class="card-case-num">Brace Case 01 · Scoliosis · ScoliBrace · Muscat</div>
+          <div class="card-title">Thoracolumbar Scoliosis — Cobb Angle 25° → 6.4° In-Brace at 1 Month</div>
+        </div>
+        <div class="card-body">
+          <div class="brace-badge">ScoliBrace — In-Brace X-Ray Result</div>
+          <div class="xray-row">
+            <div class="xray-box">
+              <div class="xray-label before">Before Brace</div>
+              <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/ialxrawahi_aseelaxalsaltxaflah_30_12_2025_er114apu-SFUUx8x57CZQXZ13.jpg" alt="Before ScoliBrace X-ray — thoracolumbar scoliosis Cobb angle 25 degrees">
+            </div>
+            <div class="xray-box">
+              <div class="xray-label in-brace">In Brace — 1 Month</div>
+              <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/ialxrawahi_aseelaxalsaltxaflah_14_4_2026_er323apu-5fUcnjWaY2loa0La.jpg" alt="In-brace X-ray — thoracolumbar scoliosis Cobb angle 6.4 degrees at 1 month">
+            </div>
+          </div>
+          <p class="card-description">This patient presented to CBP Precision Spine Center in Muscat with a thoracolumbar scoliosis confirmed on PostureRay X-ray analysis. Pre-brace imaging documented a 25° Cobb angle with an apex translation of -41.4mm right at the T5–L4 spinal segment — a clinically significant curve requiring structural intervention.
+
+Following custom ScoliBrace fitting by Dr. Richard Marchetti, in-brace PostureRay X-ray at 1 month of wear demonstrated a Cobb angle reduction to 6.4° and apex translation correction to -7.4mm right — a 74% reduction in curve magnitude and an 82% reduction in translation within the first month of bracing alone.</p>
+          <div class="stats-row">
+            <div class="stat-box"><div class="stat-label">Cobb angle pre-brace</div><div class="stat-value">25°</div></div>
+            <div class="stat-box highlight-brace"><div class="stat-label">Cobb angle in-brace</div><div class="stat-value">6.4°</div></div>
+            <div class="stat-box"><div class="stat-label">Time in brace</div><div class="stat-value">1 mo.</div></div>
+          </div>
+          <div class="stats-row two-col" style="margin-top:0;">
+            <div class="stat-box"><div class="stat-label">Apex translation pre-brace</div><div class="stat-value">-41.4mm</div></div>
+            <div class="stat-box highlight-brace"><div class="stat-label">Apex translation in-brace</div><div class="stat-value">-7.4mm</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ SCOLIOSIS BRACE PLACEHOLDER — add more cases here ══ -->
+
+      <!-- ════════════════════════════════════════════════
+           GROUP 2 — SCOLIOSIS (CBP STRUCTURAL CORRECTION)
+           Add scoliosis cases below — data-category="scoliosis"
+      ════════════════════════════════════════════════ -->
+
+      <!-- ══ CERVICAL PLACEHOLDER ══ -->
+      <!-- Add cervical cases: data-category="cervical" -->
+
+      <!-- ══ THORACIC PLACEHOLDER ══ -->
+      <!-- Add thoracic cases: data-category="thoracic" -->
+
+      <!-- ══ LUMBAR PLACEHOLDER ══ -->
+      <!-- Add lumbar cases: data-category="lumbar" -->
+
+      <!-- ══ FULL SPINE CASE 02 — REAL DATA ══ -->
+      <div class="case-card" data-category="full-spine">
+        <div class="card-header full-spine">
+          <div class="card-case-num">Case 02 · Full Spine CBP® Correction · Muscat · 5 Months</div>
+          <div class="card-title">Full Spine Structural Correction — Lower Back Pain & Bilateral Leg Tingling Resolved</div>
+        </div>
+        <div class="card-body">
+          <div class="xray-row">
+            <div class="xray-box">
+              <div class="xray-label before">Before — Dec 2025</div>
+              <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/irajab_munaxali_7_12_2025_er83lf-zFLeAIreUdaO3b0M.jpg" alt="Before CBP full spine X-ray — lower back pain and leg tingling, Dec 2025">
+            </div>
+            <div class="xray-box">
+              <div class="xray-label after">After — Apr 2026</div>
+              <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/irajab_munaxali_13_4_2026_er315ll-L5T9D634Tlvn03tL.jpg" alt="After CBP full spine X-ray — structural correction at 5 months, Apr 2026">
+            </div>
+          </div>
+
+          <p class="card-description">This patient presented to CBP Precision Spine Center in Muscat with chronic lower back pain and tingling radiating down both legs. PostureRay full spine X-ray analysis confirmed significant structural deviations across all three spinal regions — cervical, thoracic, and lumbar — each measurably outside the normal CBP® alignment values.
+
+The first 12 visits focused on pain management and nervous system stabilisation. The following 36 visits addressed structural correction using Chiropractic BioPhysics® mirror-image adjustments, region-specific extension traction, and a prescribed home rehabilitation programme. At 5 months, all three spinal regions showed measurable movement toward normal alignment on PostureRay follow-up X-ray, with full resolution of the patient's lower back pain and leg tingling.</p>
+
+          <!-- ARA TABLE -->
+          <div class="metrics-label">ARA (Absolute Rotation Angle) — Normal vs. Before vs. After</div>
+          <table class="metrics-table">
+            <tr>
+              <th>Region</th>
+              <th>Normal</th>
+              <th>Before</th>
+              <th>After</th>
+            </tr>
+            <tr>
+              <td class="region">Cervical</td>
+              <td class="val-normal">42°</td>
+              <td class="val-before">-21.8°</td>
+              <td class="val-after">-22.4°</td>
+            </tr>
+            <tr>
+              <td class="region">Thoracic</td>
+              <td class="val-normal">40°</td>
+              <td class="val-before">49.6°</td>
+              <td class="val-after">43.4°</td>
+            </tr>
+            <tr>
+              <td class="region">Lumbar</td>
+              <td class="val-normal">40°</td>
+              <td class="val-before">-26.1°</td>
+              <td class="val-after">-31.4°</td>
+            </tr>
+          </table>
+
+          <!-- TZ TABLE -->
+          <div class="metrics-label">TZ (Translational Zone) — Normal vs. Before vs. After</div>
+          <table class="metrics-table">
+            <tr>
+              <th>Region</th>
+              <th>Normal</th>
+              <th>Before</th>
+              <th>After</th>
+            </tr>
+            <tr>
+              <td class="region">Cervical</td>
+              <td class="val-normal">0 mm</td>
+              <td class="val-before">18.8 mm</td>
+              <td class="val-after">25.6 mm</td>
+            </tr>
+            <tr>
+              <td class="region">Thoracic</td>
+              <td class="val-normal">0 mm</td>
+              <td class="val-before">62.7 mm post.</td>
+              <td class="val-after">31.6 mm post.</td>
+            </tr>
+            <tr>
+              <td class="region">Lumbar</td>
+              <td class="val-normal">0 mm</td>
+              <td class="val-before">-71.7 mm post.</td>
+              <td class="val-after">-33.5 mm post.</td>
+            </tr>
+          </table>
+
+          <div class="stats-row">
+            <div class="stat-box"><div class="stat-label">Pain management visits</div><div class="stat-value">12</div></div>
+            <div class="stat-box" style="background:#e8eef6; border:1px solid #b0c4de;"><div class="stat-label">Structural correction visits</div><div class="stat-value" style="color:#2d4a7a;">36</div></div>
+            <div class="stat-box"><div class="stat-label">Total duration</div><div class="stat-value">5 mo.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ CERVICAL CASE 03 — REAL DATA ══ -->
+      <div class="case-card" data-category="cervical">
+        <div class="card-header cervical">
+          <div class="card-case-num">Case 03 · Cervical CBP® Correction · Muscat · 3 Months · 36 Visits</div>
+          <div class="card-title">Cervical Structural Correction — 91.4% Loss from Normal Reduced to 34.8% in 3 Months</div>
+        </div>
+        <div class="card-body">
+          <div class="xray-row">
+            <div class="xray-box">
+              <div class="xray-label before">Before — Mar 2026</div>
+              <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/ihamlaoui_abdelxmoumen_2_3_2026_er240lc-4OQepo33Ct2RMXWz.jpg" alt="Before cervical CBP X-ray — 91.4% ARA loss from normal, March 2026">
+            </div>
+            <div class="xray-box">
+              <div class="xray-label after">After — Jun 2026</div>
+              <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/ihamlaoui_abdelxmoumen_3_6_2026_er448lc-XBBkA34zF9a7BlPf.jpg" alt="After cervical CBP X-ray — 34.8% ARA loss from normal at 3 months, June 2026">
+            </div>
+          </div>
+
+          <p class="card-description">This patient came to CBP Precision Spine Center in Muscat not with pain — but with the self-awareness to get a postural and spinal check-up. To the eye, her posture looked close to perfect, with only minor visible deviations. But PostureRay X-ray analysis told a very different story. The cervical spine measurements revealed a 91.4% overall loss from normal alignment — a significant hidden structural deficit that carries long-term neurological and functional consequences regardless of how the patient looks or feels.
+
+Following 36 visits of Chiropractic BioPhysics® cervical structural correction — including mirror-image adjustments, cervical extension traction, and a home rehabilitation programme — the overall loss from normal was reduced to 34.8%. That represents a 56.6 percentage point improvement in cervical structural alignment in just 3 months. The patient reported feeling noticeably lighter, with reduced brain fog, improved flexibility, and stronger overall function — outcomes consistent with improved nervous system efficiency as the cervical spine moves toward its normal alignment.</p>
+
+          <table class="metrics-table">
+            <tr>
+              <th>Measurement</th>
+              <th>Normal</th>
+              <th>Before</th>
+              <th>After</th>
+            </tr>
+            <tr>
+              <td class="region">ARA C2–C7</td>
+              <td class="val-normal">-42.0°</td>
+              <td class="val-before">-3.6° <span style="font-size:10px;color:#c0392b;">(91.4% loss)</span></td>
+              <td class="val-after">-27.4° <span style="font-size:10px;color:#27ae60;">(34.8% loss)</span></td>
+            </tr>
+            <tr>
+              <td class="region">TZ C2–C7</td>
+              <td class="val-normal">0.0 mm</td>
+              <td class="val-before">26.3 mm</td>
+              <td class="val-after">14.3 mm</td>
+            </tr>
+          </table>
+
+          <div class="stats-row">
+            <div class="stat-box" style="background:#f5eeff; border:1px solid #c9a8e8;"><div class="stat-label">ARA loss before</div><div class="stat-value" style="color:#c0392b;">91.4%</div></div>
+            <div class="stat-box" style="background:#eaf5ea; border:1px solid #a8d5a8;"><div class="stat-label">ARA loss after</div><div class="stat-value" style="color:#27ae60;">34.8%</div></div>
+            <div class="stat-box"><div class="stat-label">Duration / visits</div><div class="stat-value">3 mo. / 36</div></div>
+          </div>
+
+          <div style="background:#f0f8ff; border-left:3px solid #5a2d82; border-radius:6px; padding:10px 12px; margin-top:12px; font-size:12px; color:#444; line-height:1.65;">
+            <strong style="color:#5a2d82;">Patient reported outcomes:</strong> Felt noticeably lighter · Brain fog reduced · Improved flexibility · Stronger overall function
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ LUMBAR CASE 04 — REAL DATA ══ -->
+      <div class="case-card" data-category="lumbar">
+        <div class="card-header lumbar">
+          <div class="card-case-num">Case 04 · Lumbar CBP® Correction · Muscat · 4 Months · 36 Visits</div>
+          <div class="card-title">Lumbar Structural Correction — Leg Tingling & Numbness Fully Resolved</div>
+        </div>
+        <div class="card-body">
+          <div class="xray-row">
+            <div class="xray-box">
+              <div class="xray-label before">Before — Dec 2025</div>
+              <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/irajab_munaxali_7_12_2025_er83ll-znKgoVvv0vIm4IzF.jpg" alt="Before lumbar CBP X-ray — leg tingling and numbness, Dec 2025">
+            </div>
+            <div class="xray-box">
+              <div class="xray-label after">After — Apr 2026</div>
+              <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/irajab_munaxali_13_4_2026_er315ll-L5T9D634Tlvn03tL.jpg" alt="After lumbar CBP X-ray — structural correction at 4 months, Apr 2026">
+            </div>
+          </div>
+
+          <p class="card-description">This patient presented to CBP Precision Spine Center in Muscat with tingling and numbness radiating down both legs — a common but serious symptom of lumbar structural deficit and its effect on the surrounding nervous system. PostureRay X-ray analysis confirmed the lumbar spine was operating at a 34.8% overall loss from its normal alignment, with significant posterior translational shift placing mechanical stress on the spinal cord and nerve roots.
+
+Following 36 visits of Chiropractic BioPhysics® lumbar structural correction — including mirror-image lumbar extension traction, region-specific drop adjustments, and a prescribed home rehabilitation programme — PostureRay follow-up X-ray at 4 months documented measurable structural improvement across both measurements. The overall loss from normal reduced from 34.8% to 21.6%, and the translational shift reduced by more than half. The patient reported complete resolution of tingling and numbness, the ability to pray without pain, and the capacity to walk significantly longer distances than before care.</p>
+
+          <table class="metrics-table">
+            <tr>
+              <th>Measurement</th>
+              <th>Normal</th>
+              <th>Before</th>
+              <th>After</th>
+            </tr>
+            <tr>
+              <td class="region">ARA L1–L5</td>
+              <td class="val-normal">-40.0°</td>
+              <td class="val-before">-26.1° <span style="font-size:10px;color:#c0392b;">(34.8% loss)</span></td>
+              <td class="val-after">-31.4° <span style="font-size:10px;color:#27ae60;">(21.6% loss)</span></td>
+            </tr>
+            <tr>
+              <td class="region">TZ T12–S1</td>
+              <td class="val-normal">0.0 mm</td>
+              <td class="val-before">-71.3 mm post.</td>
+              <td class="val-after">-33.6 mm post.</td>
+            </tr>
+          </table>
+
+          <div class="stats-row">
+            <div class="stat-box" style="background:#fdf3e7; border:1px solid #e0b87a;"><div class="stat-label">ARA loss before</div><div class="stat-value" style="color:#c0392b;">34.8%</div></div>
+            <div class="stat-box" style="background:#eaf5ea; border:1px solid #a8d5a8;"><div class="stat-label">ARA loss after</div><div class="stat-value" style="color:#27ae60;">21.6%</div></div>
+            <div class="stat-box"><div class="stat-label">Duration / visits</div><div class="stat-value">4 mo. / 36</div></div>
+          </div>
+          <div class="stats-row two-col" style="margin-top:0;">
+            <div class="stat-box"><div class="stat-label">TZ shift before</div><div class="stat-value">-71.3 mm</div></div>
+            <div class="stat-box" style="background:#eaf5ea; border:1px solid #a8d5a8;"><div class="stat-label">TZ shift after</div><div class="stat-value" style="color:#27ae60;">-33.6 mm</div></div>
+          </div>
+
+          <div style="background:#fef9f0; border-left:3px solid #7a4a1a; border-radius:6px; padding:10px 12px; margin-top:12px; font-size:12px; color:#444; line-height:1.65;">
+            <strong style="color:#7a4a1a;">Patient reported outcomes:</strong> No more tingling or numbness · Able to pray without pain · Walks longer distances
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ CERVICAL CASE 05 — REAL DATA ══ -->
+      <div class="case-card" data-category="cervical">
+        <div class="card-header cervical">
+          <div class="card-case-num">Case 05 · Cervical CBP® Correction · Muscat · 3 Months · 36 Visits</div>
+          <div class="card-title">Cervical Correction — Neck, Upper Back & Referred Lower Back Pain All Resolved</div>
+        </div>
+        <div class="card-body">
+          <div class="xray-row">
+            <div class="xray-box">
+              <div class="xray-label before">Before — Mar 2026</div>
+              <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/ialxjabri_abdullahxsaifxamur_31_3_2026_er283lc-yZ0JTDfsJvpcecea.jpg" alt="Before cervical CBP X-ray — neck and upper back pain, March 2026">
+            </div>
+            <div class="xray-box">
+              <div class="xray-label after">After — Jun 2026</div>
+              <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/ialxjabri_abdullahxsaifxamur_7_6_2026_er454lc-TIkYVQjpWksaMO3K.jpg" alt="After cervical CBP X-ray — structural correction at 3 months, June 2026">
+            </div>
+          </div>
+
+          <p class="card-description">This patient presented to CBP Precision Spine Center in Muscat with neck pain, upper back pain, and additional lower back pain. PostureRay cervical X-ray analysis confirmed a 36.7% overall loss from the normal cervical curve — a structural deficit that places abnormal tension on the spinal cord and surrounding musculature, a common driver of both localised neck pain and referred pain patterns throughout the back.
+
+Following 36 visits of Chiropractic BioPhysics® cervical structural correction — including mirror-image adjustments, cervical extension traction, and a prescribed home programme — PostureRay follow-up X-ray at 3 months showed measurable improvement across both cervical alignment measurements. The overall loss from normal reduced from 36.7% to 28.3%, and the translational shift reduced from 21.5mm to 14.9mm. Notably, the patient's lower back pain resolved alongside the neck and upper back pain — a finding consistent with the global tension-releasing effect of restoring the cervical curve, even without direct lumbar intervention.</p>
+
+          <table class="metrics-table">
+            <tr>
+              <th>Measurement</th>
+              <th>Normal</th>
+              <th>Before</th>
+              <th>After</th>
+            </tr>
+            <tr>
+              <td class="region">ARA C2–C7</td>
+              <td class="val-normal">-42.0°</td>
+              <td class="val-before">-26.6° <span style="font-size:10px;color:#c0392b;">(36.7% loss)</span></td>
+              <td class="val-after">-30.1° <span style="font-size:10px;color:#27ae60;">(28.3% loss)</span></td>
+            </tr>
+            <tr>
+              <td class="region">TZ C2–C7</td>
+              <td class="val-normal">0.0 mm</td>
+              <td class="val-before">21.5 mm</td>
+              <td class="val-after">14.9 mm</td>
+            </tr>
+          </table>
+
+          <div class="stats-row">
+            <div class="stat-box" style="background:#f5eeff; border:1px solid #c9a8e8;"><div class="stat-label">ARA loss before</div><div class="stat-value" style="color:#c0392b;">36.7%</div></div>
+            <div class="stat-box" style="background:#eaf5ea; border:1px solid #a8d5a8;"><div class="stat-label">ARA loss after</div><div class="stat-value" style="color:#27ae60;">28.3%</div></div>
+            <div class="stat-box"><div class="stat-label">Duration / visits</div><div class="stat-value">3 mo. / 36</div></div>
+          </div>
+
+          <div style="background:#f0f8ff; border-left:3px solid #5a2d82; border-radius:6px; padding:10px 12px; margin-top:12px; font-size:12px; color:#444; line-height:1.65;">
+            <strong style="color:#5a2d82;">Patient reported outcomes:</strong> Neck pain resolved · Upper back pain resolved · Lower back pain resolved — without direct lumbar treatment
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ THORACIC CASE 06 — REAL DATA ══ -->
+      <div class="case-card" data-category="thoracic">
+        <div class="card-header thoracic">
+          <div class="card-case-num">Case 06 · Thoracic CBP® Correction · Muscat · 2 Months · 24 Visits · Patient from France</div>
+          <div class="card-title">Scheuermann's Kyphosis — Measurable Structural Correction in 2 Months</div>
+        </div>
+        <div class="card-body">
+          <div class="xray-row">
+            <div class="xray-box">
+              <div class="xray-label before">Before — Mar 2026</div>
+              <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/igoubier_sylvian_15_3_2026_er266lt-LKVWFp4bchgfdjPS.jpg" alt="Before thoracic CBP X-ray — Scheuermann's kyphosis, March 2026">
+            </div>
+            <div class="xray-box">
+              <div class="xray-label after">After — Apr 2026</div>
+              <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/igoubier_sylvian_27_4_2026_er351lt-bLfJQYtk7IL257e7.jpg" alt="After thoracic CBP X-ray — Scheuermann's kyphosis correction at 2 months, April 2026">
+            </div>
+          </div>
+
+          <div style="background:#e8f5f2; border:1px solid #9dd4c8; border-radius:8px; padding:10px 14px; margin-bottom:14px; font-size:12px; color:#1a5a4a; line-height:1.7;">
+            <strong>What is Scheuermann's Kyphosis?</strong> A structural spinal deformity that develops during adolescence when normal rectangular vertebrae grow into wedge shapes, causing the upper back to hunch forward. Unlike typical postural slouching, the resulting curve is rigid and cannot be voluntarily corrected — it requires structural intervention.
+          </div>
+
+          <p class="card-description">This patient travelled from France specifically to receive CBP® structural correction at CBP Precision Spine Center in Muscat, combining treatment with a holiday in Oman. He came in with no pain — his goal was postural improvement. PostureRay X-ray analysis revealed a diagnosis of Scheuermann's Kyphosis, with the thoracic curve measuring 66.8° — a 51.8% overall gain from the normal 44° thoracic arc, with an accompanying posterior translational shift.
+
+Despite the structural rigidity characteristic of Scheuermann's Kyphosis, PostureRay follow-up X-ray after just 2 months and 24 visits of Chiropractic BioPhysics® thoracic structural correction showed meaningful correction across both measurements. The thoracic ARC reduced from 66.8° to 58.3°, and the overall gain from normal reduced from 51.8% to 32.5% — a 19.3 percentage point improvement in 8 weeks. The patient had to return to France but plans to return to Muscat to complete a full 36-visit care plan and further the structural correction.</p>
+
+          <table class="metrics-table">
+            <tr>
+              <th>Measurement</th>
+              <th>Normal</th>
+              <th>Before</th>
+              <th>After</th>
+            </tr>
+            <tr>
+              <td class="region">ARA T1–T12</td>
+              <td class="val-normal">44.0°</td>
+              <td class="val-before">66.8° <span style="font-size:10px;color:#c0392b;">(51.8% gain)</span></td>
+              <td class="val-after">58.3° <span style="font-size:10px;color:#27ae60;">(32.5% gain)</span></td>
+            </tr>
+            <tr>
+              <td class="region">TZ T1–T12</td>
+              <td class="val-normal">0.0 mm</td>
+              <td class="val-before">-9.6 mm</td>
+              <td class="val-after">15.1 mm</td>
+            </tr>
+          </table>
+
+          <div class="stats-row">
+            <div class="stat-box" style="background:#e8f5f2; border:1px solid #9dd4c8;"><div class="stat-label">Excess curve before</div><div class="stat-value" style="color:#c0392b;">51.8%</div></div>
+            <div class="stat-box" style="background:#eaf5ea; border:1px solid #a8d5a8;"><div class="stat-label">Excess curve after</div><div class="stat-value" style="color:#27ae60;">32.5%</div></div>
+            <div class="stat-box"><div class="stat-label">Duration / visits</div><div class="stat-value">2 mo. / 24</div></div>
+          </div>
+
+          <div style="background:#e8f5f2; border-left:3px solid #1a5a4a; border-radius:6px; padding:10px 12px; margin-top:12px; font-size:12px; color:#444; line-height:1.65;">
+            <strong style="color:#1a5a4a;">Note:</strong> This patient travelled from France for treatment. Results were achieved in an abbreviated 2-month programme. A full 36-visit care plan is planned to further the structural correction.
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ SCOLIOSIS CASE 07 — REAL DATA ══ -->
+      <div class="case-card" data-category="scoliosis">
+        <div class="card-header" style="background:#2C3E45;">
+          <div class="card-case-num">Case 07 · Scoliosis · CBP® Mirror-Image Traction · No Brace · Muscat · 3 Months · 24 Visits</div>
+          <div class="card-title">Thoracolumbar Scoliosis — Cobb 17.3° → 10.9° Without Bracing, Plus Neurological Symptoms Resolved</div>
+        </div>
+        <div class="card-body">
+          <div style="background:#fff8e1; border:1px solid #f5c842; border-radius:8px; padding:9px 14px; margin-bottom:14px; font-size:12px; color:#7a5a00; line-height:1.6;">
+            <strong>No brace used.</strong> This result was achieved using the CBP® mirror-image traction and adjustment protocol alone — demonstrating that meaningful scoliosis correction is possible without bracing.
+          </div>
+          <div class="xray-row">
+            <div class="xray-box">
+              <div class="xray-label before">Before — Jan 2026</div>
+              <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/ialxamri_mayarxahmed_19_1_2026_er149apu-kPChWWTg5d1LANVk.jpg" alt="Before scoliosis CBP X-ray — Cobb angle 17.3 degrees right, January 2026">
+            </div>
+            <div class="xray-box">
+              <div class="xray-label after">After — Apr 2026</div>
+              <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/ialxamri_mayarxahmed_13_4_2026_er314apu-Q9DP5BcXIDZBBniZ.jpg" alt="After scoliosis CBP X-ray — Cobb angle 10.9 degrees right at 3 months, April 2026">
+            </div>
+          </div>
+
+          <p class="card-description">This patient presented to CBP Precision Spine Center in Muscat with a right thoracolumbar scoliosis confirmed on PostureRay X-ray analysis, along with leg shaking symptoms and numbness in the right foot — neurological signs consistent with mechanical nerve irritation from the spinal curvature and translation.
+
+Importantly, no ScoliBrace was used in this case. Correction was achieved entirely through the CBP® mirror-image traction and adjustment protocol: a series of region-specific extension traction setups designed to reverse the exact direction of the structural deviation, combined with a home rehabilitation programme.
+
+At 3 months and 24 visits, the Cobb angle reduced from 17.3° to 10.9° right — a 36.9% reduction — and the spinal translation reduced from -33.8mm to -17.2mm right, almost halving the lateral shift. The leg shaking stopped completely and the right foot numbness resolved. The patient elected to continue care given the degree of change achieved in such a short time.</p>
+
+          <div class="stats-row">
+            <div class="stat-box"><div class="stat-label">Cobb angle before</div><div class="stat-value">17.3°</div></div>
+            <div class="stat-box highlight"><div class="stat-label">Cobb angle after</div><div class="stat-value">10.9°</div></div>
+            <div class="stat-box"><div class="stat-label">Cobb reduction</div><div class="stat-value">36.9%</div></div>
+          </div>
+          <div class="stats-row two-col" style="margin-top:0;">
+            <div class="stat-box"><div class="stat-label">Translation before</div><div class="stat-value">-33.8 mm</div></div>
+            <div class="stat-box highlight"><div class="stat-label">Translation after</div><div class="stat-value">-17.2 mm</div></div>
+          </div>
+
+          <div style="background:#f0f8ff; border-left:3px solid #2C3E45; border-radius:6px; padding:10px 12px; margin-top:12px; font-size:12px; color:#444; line-height:1.65;">
+            <strong style="color:#2C3E45;">Patient reported outcomes:</strong> Leg shaking stopped · Right foot numbness resolved · Continued care due to speed of correction
+          </div>
+        </div>
+      </div>
+
+      <!-- NO RESULTS MESSAGE -->
+      <div class="no-results" id="noResults">No cases found for this category yet. Check back soon.</div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const buttons  = document.querySelectorAll('.filter-btn');
+  const cards    = document.querySelectorAll('.case-card');
+  const noResults = document.getElementById('noResults');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const filter = btn.dataset.filter;
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        if (filter === 'all' || card.dataset.category === filter) {
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+    });
+  });
+</script>
+
+</body>
+</html>
