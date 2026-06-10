@@ -191,7 +191,14 @@
 
   /* ── RESPONSIVE ── */
   @media (max-width: 700px) {
-    .cards-grid { grid-template-columns: 1fr; }
+    body { padding: 22px 12px; }
+    .cards-grid { grid-template-columns: 1fr; gap: 18px; }
+    .card-body { padding: 14px; }
+    .group-heading { font-size: 19px; }
+    .group-subheading { font-size: 13px; }
+    .metrics-table { font-size: 11px; }
+    .metrics-table th, .metrics-table td { padding: 5px 6px; }
+    .xray-row { gap: 6px; }
   }
 </style>
 </head>
@@ -665,9 +672,20 @@ At 3 months and 24 visits, the Cobb angle reduced from 17.3° to 10.9° right �
       });
 
       noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+      if (typeof postHeight === 'function') { postHeight(); setTimeout(postHeight, 60); }
     });
   });
   updateHeading('all');
+
+  // Broadcast height to parent so the cross-origin iframe can auto-resize
+  function postHeight(){
+    var h = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+    parent.postMessage({ cbpsjHeight: h }, '*');
+  }
+  window.addEventListener('load', postHeight);
+  window.addEventListener('resize', postHeight);
+  document.querySelectorAll('img').forEach(function(im){ im.addEventListener('load', postHeight); });
+  [200,600,1200,2500].forEach(function(t){ setTimeout(postHeight, t); });
 </script>
 
 </body>
