@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CBP Precision Spine Center â Clinic Gallery</title>
+<title>CBP Precision Spine Center Ã¢ÂÂ Clinic Gallery</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { overflow-x: hidden; }
@@ -30,12 +30,17 @@
     background: #1a2428;
   }
   .main-pane img {
-    width: 100%;
-    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
     object-fit: contain;
     display: block;
     transition: opacity 0.35s ease;
-    background: #1a2428;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
   .arrow {
     position: absolute;
