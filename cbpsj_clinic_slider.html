@@ -184,8 +184,15 @@ function goTo(n) {
   }, 180);
   counter.textContent = (current + 1) + ' / ' + COUNT;
   document.querySelectorAll('.thumb').forEach((t, i) => t.classList.toggle('active', i === current));
-  // Scroll active thumb into view
-  thumbCol.children[current].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+  // Keep the active thumb centered within the strip ONLY — never scroll the parent page.
+  const _at = thumbCol.children[current];
+  const _c = thumbCol.getBoundingClientRect();
+  const _t = _at.getBoundingClientRect();
+  thumbCol.scrollBy({
+    top: (_t.top - _c.top) - (thumbCol.clientHeight - _at.clientHeight) / 2,
+    left: (_t.left - _c.left) - (thumbCol.clientWidth - _at.clientWidth) / 2,
+    behavior: 'smooth'
+  });
   resetAuto();
 }
 
