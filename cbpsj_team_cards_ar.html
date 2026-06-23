@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBP Precision Spine Center — فريقنا</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;background:transparent}
+  .cbpteam {
+    --teal: #16B6BA; --teal-dark: #0f8e91; --charcoal: #2C3E45; --ink: #233138;
+    --muted: #6b7c84; --line: #e6ecee; --tint: rgba(22,182,186,.09); --card: #ffffff;
+    --shadow: 0 1px 2px rgba(44,62,69,.06), 0 8px 24px rgba(44,62,69,.06);
+    --shadow-hover: 0 6px 14px rgba(44,62,69,.10), 0 22px 48px rgba(44,62,69,.16);
+    box-sizing: border-box; width: 100%; max-width: 1180px; margin: 0 auto; padding: 16px;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif; color: var(--ink);
+  }
+  .cbpteam *, .cbpteam *::before, .cbpteam *::after { box-sizing: border-box; }
+  .cbpteam__head { text-align: center; max-width: 640px; margin: 8px auto 40px; }
+  .cbpteam__eyebrow { font-family: 'Bebas Neue', sans-serif; letter-spacing: .18em; font-size: 15px; color: var(--teal-dark); text-transform: uppercase; margin: 0 0 10px; }
+  .cbpteam__title { font-weight: 700; font-size: clamp(26px, 4vw, 40px); line-height: 1.1; letter-spacing: -.01em; color: var(--charcoal); margin: 0 0 12px; }
+  .cbpteam__sub { font-size: 16px; line-height: 1.6; color: var(--muted); margin: 0; }
+  .cbpteam__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 24px; }
+  .cbpteam__card { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease; display: flex; flex-direction: column; }
+  .cbpteam__card::before { content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 0; background: linear-gradient(180deg, var(--teal), var(--teal-dark)); transition: height .45s cubic-bezier(.2,.7,.2,1); z-index: 3; }
+  .cbpteam__card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); }
+  .cbpteam__card:hover::before { height: 100%; }
+  .cbpteam__photo { position: relative; aspect-ratio: 1 / 1; overflow: hidden; background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%); }
+  .cbpteam__photo img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+  .cbpteam__card:hover .cbpteam__photo img { transform: scale(1.05); }
+  .cbpteam__initials { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 56px; letter-spacing: .04em; color: rgba(255,255,255,.92); }
+  .cbpteam__body { padding: 20px 20px 18px; display: flex; flex-direction: column; flex: 1; }
+  .cbpteam__role { font-family: 'Bebas Neue', sans-serif; text-transform: uppercase; letter-spacing: .14em; font-size: 13px; color: var(--teal-dark); margin: 0 0 4px; }
+  .cbpteam__name { font-size: 18px; font-weight: 600; letter-spacing: -.01em; color: var(--charcoal); margin: 0 0 12px; line-height: 1.3; }
+  .cbpteam__chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 4px; }
+  .cbpteam__chip { font-size: 11.5px; font-weight: 500; color: var(--teal-dark); background: var(--tint); padding: 5px 10px; border-radius: 999px; line-height: 1.2; }
+  .cbpteam__chip--nat { background: #eef2f3; color: var(--charcoal); }
+  .cbpteam__bio { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .4s cubic-bezier(.2,.7,.2,1); }
+  .cbpteam__bio > div { overflow: hidden; }
+  .cbpteam__bio p { font-size: 14px; line-height: 1.62; color: var(--muted); margin: 14px 0 0; }
+  .cbpteam__card.is-open .cbpteam__bio { grid-template-rows: 1fr; }
+  .cbpteam__toggle { margin-top: auto; padding-top: 16px; background: none; border: none; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 13.5px; font-weight: 600; color: var(--teal-dark); display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; }
+  .cbpteam__toggle svg { transition: transform .35s ease; }
+  .cbpteam__card.is-open .cbpteam__toggle svg { transform: rotate(180deg); }
+  .cbpteam__toggle:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 4px; }
+  .cbpteam__toggle .label-more { display: inline; } .cbpteam__toggle .label-less { display: none; }
+  .cbpteam__card.is-open .cbpteam__toggle .label-more { display: none; }
+  .cbpteam__card.is-open .cbpteam__toggle .label-less { display: inline; }
+  .cbpteam[dir="rtl"] { font-family: 'Cairo', sans-serif; }
+  .cbpteam[dir="rtl"] .cbpteam__card::before { left: auto; right: 0; }
+  .cbpteam[dir="rtl"] .cbpteam__name, .cbpteam[dir="rtl"] .cbpteam__title { font-family: 'Cairo', sans-serif; }
+  .cbpteam[dir="rtl"] .cbpteam__sub { font-family: 'Cairo', sans-serif; }
+  .cbpteam[dir="rtl"] .cbpteam__eyebrow, .cbpteam[dir="rtl"] .cbpteam__role { font-family: 'Cairo', sans-serif; letter-spacing: 0; font-weight: 700; text-transform: none; }
+  .cbpteam[dir="rtl"] .cbpteam__toggle { font-family: 'Cairo', sans-serif; }
+  .cbpteam[dir="rtl"] .cbpteam__initials { font-family: 'Cairo', sans-serif; letter-spacing: 0; }
+  .cbpteam[dir="rtl"] bdi { font-family: 'Inter', sans-serif; }
+  @media (prefers-reduced-motion: reduce) { .cbpteam__card, .cbpteam__card::before, .cbpteam__photo img, .cbpteam__bio, .cbpteam__toggle svg { transition: none !important; } }
+  @media (max-width: 600px) {
+    .cbpteam { padding: 12px; }
+    .cbpteam__head { margin-bottom: 28px; }
+    .cbpteam__grid { gap: 16px; }
+    .cbpteam__body { padding: 16px; }
+    .cbpteam__name { font-size: 17px; }
+    .cbpteam__sub { font-size: 15px; }
+    .cbpteam__eyebrow { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cbpteam" dir="rtl" lang="ar">
+
+  <div class="cbpteam__head">
+    <p class="cbpteam__eyebrow">الأشخاص خلف رعايتك</p>
+    <h2 class="cbpteam__title">تعرّف على فريق <bdi>CBP Precision</bdi></h2>
+    <p class="cbpteam__sub">فريق سريري مبني على تصحيح دقيق وقابل للقياس للعمود الفقري — وعلى الاعتناء بك في كل خطوة من الطريق.</p>
+  </div>
+
+  <div class="cbpteam__grid">
+
+    <!-- 1 RICHARD -->
+    <article class="cbpteam__card">
+      <div class="cbpteam__photo"><img src="https://raw.githubusercontent.com/cbpsj102025-hash/cbpsj-web-assets/main/images/richard.jpg" alt="د. ريتشارد ماركيتي"></div>
+      <div class="cbpteam__body">
+        <p class="cbpteam__role">مالك ومدير العيادة · كبير أخصائيي تقويم العمود الفقري</p>
+        <h3 class="cbpteam__name">د. ريتشارد ماركيتي، <bdi>DC</bdi></h3>
+        <div class="cbpteam__chips">
+          <span class="cbpteam__chip cbpteam__chip--nat">أمريكي</span>
+          <span class="cbpteam__chip">دكتوراه في تقويم العمود الفقري</span>
+          <span class="cbpteam__chip">معتمد <bdi>Advanced CBP®</bdi></span>
+          <span class="cbpteam__chip">معتمد <bdi>CBP®</bdi> الأساسي</span>
+          <span class="cbpteam__chip">معتمد <bdi>ScoliBrace®</bdi></span>
+          <span class="cbpteam__chip">معتمد <bdi>Sole Supports®</bdi></span>
+          <span class="cbpteam__chip">مقدّم <bdi>BLS &amp; AED</bdi></span>
+        </div>
+        <div class="cbpteam__bio"><div><p>أسّس د. ريتشارد مركز <bdi>CBP Precision Spine Center</bdi> ويقود فيه أعمال التصحيح البنيوي بصفته كبير أخصائيي تقويم العمود الفقري. وهو خرّيج <bdi>Parker College of Chiropractic</bdi> ويتمتع بخبرة عالمية تتجاوز 18 عامًا في رعاية تقويم العمود الفقري وإدارة الجنف، ويحمل اعتماد <bdi>CBP®</bdi> المتقدم — أحد أقل من 200 ممارس على مستوى العالم، والأول في المنطقة. ويركّز عمله على التصحيح القوامي والبنيوي لحالات مثل آلام الرقبة وآلام الظهر وتنكّس العمود الفقري، مستندًا دائمًا إلى رعاية قائمة على الأدلة. ومقيمٌ في مسقط منذ أكثر من عقد، حيث يجمع بين التصحيح الدقيق القابل للقياس والإرشاد الغذائي لدعم صحة كل مريض على المدى الطويل.</p></div></div>
+        <button class="cbpteam__toggle" aria-expanded="false"><span class="label-more">اقرأ السيرة كاملة</span><span class="label-less">عرض أقل</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </article>
+
+    <!-- 2 ALICIA -->
+    <article class="cbpteam__card">
+      <div class="cbpteam__photo"><img src="https://raw.githubusercontent.com/cbpsj102025-hash/cbpsj-web-assets/main/images/alicia.jpg" alt="د. أليشيا ماركيتي"></div>
+      <div class="cbpteam__body">
+        <p class="cbpteam__role">مسؤولة العمليات · شريكة في الملكية</p>
+        <h3 class="cbpteam__name">د. أليشيا ماركيتي، <bdi>DHA, MHA, MT</bdi></h3>
+        <div class="cbpteam__chips">
+          <span class="cbpteam__chip cbpteam__chip--nat">أمريكية</span>
+          <span class="cbpteam__chip">إدارة الرعاية الصحية</span>
+          <span class="cbpteam__chip">إدارة الجنف</span>
+          <span class="cbpteam__chip">المعالجة اليدوية للعمود الفقري <bdi>OMT</bdi></span>
+          <span class="cbpteam__chip">معتمدة <bdi>ScoliBrace®</bdi></span>
+          <span class="cbpteam__chip">معتمدة <bdi>Sole Supports®</bdi></span>
+          <span class="cbpteam__chip">مقدّمة <bdi>BLS &amp; AED</bdi></span>
+        </div>
+        <div class="cbpteam__bio"><div><p>تشارك أليشيا في ملكية مركز <bdi>CBP Precision Spine Center</bdi> وتقود عملياته اليومية، مستندةً إلى خبرة تتجاوز 15 عامًا في مجال الرعاية الصحية شملت أدوارًا سريرية وإدارية. وتشرف على عمليات العيادة وجدولة مواعيد المرضى وتنسيق فريق العمل، مع التركيز على تجربة سلسة ومنظَّمة من أول اتصال وحتى رعاية المتابعة. وتحمل درجتي الماجستير والدكتوراه في إدارة الرعاية الصحية، إلى جانب خلفية سريرية في العلاج اليدوي والتدليك، واعتمادات تشمل إدارة الجنف والمعالجة اليدوية للعمود الفقري <bdi>OMT</bdi>. وأولويتها أن تبقى العيادة منظَّمة ومتمحورة حول المريض ليتمكّن الفريق السريري من تقديم أفضل ما لديه.</p></div></div>
+        <button class="cbpteam__toggle" aria-expanded="false"><span class="label-more">اقرأ السيرة كاملة</span><span class="label-less">عرض أقل</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </article>
+
+    <!-- 3 CORALIE -->
+    <article class="cbpteam__card">
+      <div class="cbpteam__photo"><img src="https://raw.githubusercontent.com/cbpsj102025-hash/cbpsj-web-assets/main/images/coralie.jpg" alt="كورالي غوبييه"></div>
+      <div class="cbpteam__body">
+        <p class="cbpteam__role">أخصائية تقويم العمود الفقري</p>
+        <h3 class="cbpteam__name">كورالي غوبييه، <bdi>M.Sc.</bdi></h3>
+        <div class="cbpteam__chips">
+          <span class="cbpteam__chip cbpteam__chip--nat">فرنسية</span>
+          <span class="cbpteam__chip">ماجستير في تقويم العمود الفقري</span>
+          <span class="cbpteam__chip">علم الحركة التطبيقي</span>
+          <span class="cbpteam__chip">تقنية <bdi>Gonstead</bdi></span>
+          <span class="cbpteam__chip">مقدّمة <bdi>BLS &amp; AED</bdi></span>
+        </div>
+        <div class="cbpteam__bio"><div><p>تأهّلت كورالي كأخصائية تقويم العمود الفقري في فرنسا بمعهد <bdi>IFEC</bdi> في باريس–تولوز، ومارست مهنتها بعد ذلك في فرنسا والهند والفلبين قبل انضمامها إلى <bdi>CBP</bdi>. وتتعامل مع طيف من الحالات البنيوية والعضلية الهيكلية، مستندةً إلى تدريب على تقنيات تشمل علم الحركة التطبيقي و<bdi>Gonstead</bdi> وتقنية <bdi>Sacro Occipital</bdi>. وهي متحدثة أصلية للفرنسية وتجيد الإنجليزية بطلاقة ولديها إلمام بالإسبانية، وتقدّم نهجًا دوليًا يتمحور حول المريض. ويركّز عملها على التصحيح الدقيق المخصَّص الذي يُصمَّم وفق احتياجات كل شخص.</p></div></div>
+        <button class="cbpteam__toggle" aria-expanded="false"><span class="label-more">اقرأ السيرة كاملة</span><span class="label-less">عرض أقل</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </article>
+
+    <!-- 4 IMAN -->
+    <article class="cbpteam__card">
+      <div class="cbpteam__photo"><img src="https://raw.githubusercontent.com/cbpsj102025-hash/cbpsj-web-assets/main/images/iman.jpg" alt="د. إيمان محمد"></div>
+      <div class="cbpteam__body">
+        <p class="cbpteam__role">طبيبة عامة مقيمة</p>
+        <h3 class="cbpteam__name">د. إيمان محمد، <bdi>GP</bdi></h3>
+        <div class="cbpteam__chips">
+          <span class="cbpteam__chip cbpteam__chip--nat">سودانية</span>
+          <span class="cbpteam__chip">طبيبة عامة</span>
+          <span class="cbpteam__chip"><bdi>MBBS</bdi></span>
+          <span class="cbpteam__chip">معتمدة <bdi>ACLS</bdi></span>
+          <span class="cbpteam__chip">مقدّمة <bdi>BLS &amp; AED</bdi></span>
+        </div>
+        <div class="cbpteam__bio"><div><p>د. إيمان هي الطبيبة العامة المقيمة في العيادة، وتقدّم التقييم الطبي جنبًا إلى جنب مع فريق الرعاية البنيوية. وتحمل بكالوريوس الطب والجراحة (<bdi>MBBS</bdi>) من جامعة الجزيرة، وهي ممارِسة طبية مسجَّلة تتمتع بعدة سنوات من الخبرة السريرية في المستشفيات والمراكز الطبية في السودان ومصر. وبنهجها المتأنّي والرحيم، تساعد على ضمان النظر إلى رعاية كل مريض من منظور طبي متكامل.</p></div></div>
+        <button class="cbpteam__toggle" aria-expanded="false"><span class="label-more">اقرأ السيرة كاملة</span><span class="label-less">عرض أقل</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </article>
+
+    <!-- 5 FELICE -->
+    <article class="cbpteam__card">
+      <div class="cbpteam__photo"><img src="https://raw.githubusercontent.com/cbpsj102025-hash/cbpsj-web-assets/main/images/felice.jpg" alt="فيليس كايابياب"></div>
+      <div class="cbpteam__body">
+        <p class="cbpteam__role">رئيسة قسم العلاج الطبيعي</p>
+        <h3 class="cbpteam__name">فيليس كايابياب، <bdi>BSPT</bdi></h3>
+        <div class="cbpteam__chips">
+          <span class="cbpteam__chip cbpteam__chip--nat">فلبينية</span>
+          <span class="cbpteam__chip">العلاج الطبيعي الرياضي</span>
+          <span class="cbpteam__chip">مقدّمة <bdi>BLS &amp; AED</bdi></span>
+        </div>
+        <div class="cbpteam__bio"><div><p>تقود فيليس فريق العلاج الطبيعي، وتجلب خبرة 13 عامًا في إصابات الجهاز العضلي الهيكلي، والتأهيل العظمي قبل العمليات الجراحية وبعدها، والإصابات الرياضية. وهي حاصلة على بكالوريوس العلوم في العلاج الطبيعي، وتجمع بين العلاج اليدوي ووسائل علاجية مثل العلاج بالموجات التصادمية، وتمتد خلفيتها لتشمل العلاج الطبيعي الرياضي والتأهيل العصبي. وبتركيزها على التفاصيل وتعاطفها، تصمّم رعاية شاملة ومخصَّصة وفق احتياجات كل مريض.</p></div></div>
+        <button class="cbpteam__toggle" aria-expanded="false"><span class="label-more">اقرأ السيرة كاملة</span><span class="label-less">عرض أقل</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </article>
+
+    <!-- 6 IYAD -->
+    <article class="cbpteam__card">
+      <div class="cbpteam__photo"><img src="https://raw.githubusercontent.com/cbpsj102025-hash/cbpsj-web-assets/main/images/iyad.jpg" alt="إياد علي"></div>
+      <div class="cbpteam__body">
+        <p class="cbpteam__role">أخصائي العلاج الطبيعي</p>
+        <h3 class="cbpteam__name">إياد علي، <bdi>BHSc, PT</bdi></h3>
+        <div class="cbpteam__chips">
+          <span class="cbpteam__chip cbpteam__chip--nat">سوري</span>
+          <span class="cbpteam__chip">العلاج بالليزر</span>
+          <span class="cbpteam__chip">العلاج بالموجات التصادمية</span>
+          <span class="cbpteam__chip">مقدّم <bdi>BLS &amp; AED</bdi></span>
+        </div>
+        <div class="cbpteam__bio"><div><p>إياد أخصائي علاج طبيعي من سوريا يتمتع بخبرة تتجاوز عقدًا من الزمن في الحالات العضلية الهيكلية والعصبية والتأهيلية. وهو حاصل على بكالوريوس العلوم في العلاج الطبيعي من جامعة البعث، ويجمع بين العلاج اليدوي ووسائل علاجية مثل العلاج بالليزر والموجات التصادمية، ويملك خبرة سريرية وتعليمية معًا. ومنذ انتقاله إلى عُمان عام 2017، عمل في عدة مراكز مرموقة قبل انضمامه إلى <bdi>CBP</bdi>، حيث يقيّم المرضى ويضع خطط الرعاية ويوجّه برامج التمارين التصحيحية والشدّ. ويجيد العربية والإنجليزية، ويلتزم بمعايير عالية ويظل مركّزًا على تعافي كل مريض وجودة حياته.</p></div></div>
+        <button class="cbpteam__toggle" aria-expanded="false"><span class="label-more">اقرأ السيرة كاملة</span><span class="label-less">عرض أقل</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </article>
+
+    <!-- 7 ESSRAA (photo auto-loads from repo once images/essraa.jpg exists) -->
+    <article class="cbpteam__card">
+      <div class="cbpteam__photo"><img src="https://raw.githubusercontent.com/cbpsj102025-hash/cbpsj-web-assets/main/images/essraa.jpg" alt="إسراء حسن الشريف" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><span class="cbpteam__initials" style="display:none">EA</span></div>
+      <div class="cbpteam__body">
+        <p class="cbpteam__role">أخصائية العلاج الطبيعي</p>
+        <h3 class="cbpteam__name">إسراء حسن الشريف، <bdi>BHSc, PT</bdi></h3>
+        <div class="cbpteam__chips">
+          <span class="cbpteam__chip cbpteam__chip--nat">سودانية</span>
+          <span class="cbpteam__chip">معتمدة في الإبر الجافة</span>
+          <span class="cbpteam__chip">مقدّمة <bdi>BLS &amp; AED</bdi></span>
+        </div>
+        <div class="cbpteam__bio"><div><p>إسراء أخصائية علاج طبيعي تتمتع بخبرة تقارب العقد في المستشفيات ورعاية العمود الفقري، تمتد لتشمل التأهيل العظمي والعصبي وعلاج الأطفال، والتأهيل قبل العمليات الجراحية وبعدها. وتجلب هذا الاتساع إلى رعاية كل مريض في <bdi>CBP</bdi>، بأسلوب هادئ يركّز على التفاصيل وتفانٍ صادق في كل حالة. وهي خرّيجة علاج طبيعي عام 2016، وتدرس حاليًا الماجستير في إدارة الصحة والتخطيط والقيادة. وترى إسراء أن الرعاية تبلغ أفضل صورها حين تلتقي الاحترافية بالشغف الحقيقي — وهذه هي الروح التي تجلبها إلى كل جلسة.</p></div></div>
+        <button class="cbpteam__toggle" aria-expanded="false"><span class="label-more">اقرأ السيرة كاملة</span><span class="label-less">عرض أقل</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </article>
+
+    <!-- 8 NASRA -->
+    <article class="cbpteam__card">
+      <div class="cbpteam__photo"><img src="https://raw.githubusercontent.com/cbpsj102025-hash/cbpsj-web-assets/main/images/nasra.jpg" alt="نصراء الحارثية"></div>
+      <div class="cbpteam__body">
+        <p class="cbpteam__role">مساعدة أخصائي تقويم العمود الفقري</p>
+        <h3 class="cbpteam__name">نصراء الحارثية، <bdi>CA</bdi></h3>
+        <div class="cbpteam__chips">
+          <span class="cbpteam__chip cbpteam__chip--nat">عُمانية</span>
+          <span class="cbpteam__chip">أول مساعدة عُمانية معتمدة</span>
+          <span class="cbpteam__chip">مقدّمة <bdi>BLS &amp; AED</bdi></span>
+          <span class="cbpteam__chip">تدريب جامعة <bdi>Parker</bdi></span>
+        </div>
+        <div class="cbpteam__bio"><div><p>نصراء هي أول عُمانية تحصل على اعتماد مساعدة أخصائي تقويم العمود الفقري (<bdi>CA</bdi>)، وتتمتع بثماني سنوات من الخبرة في رعاية المرضى. وتدعم المرضى خلال علاجهم وتساعد على الحفاظ على رعاية آمنة وفعّالة إلى جانب الفريق السريري. وهي معتمدة في <bdi>BLS</bdi> و<bdi>CPR/AED</bdi>، وأكملت أيضًا برنامج تدريب مساعدي أخصائيي تقويم العمود الفقري في جامعة <bdi>Parker</bdi> في الولايات المتحدة. وتجيد العربية والإنجليزية والسواحيلية، وهي شغوفة بدعم المرضى ومساعدتهم على الشعور بالراحة.</p></div></div>
+        <button class="cbpteam__toggle" aria-expanded="false"><span class="label-more">اقرأ السيرة كاملة</span><span class="label-less">عرض أقل</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </article>
+
+    <!-- 9 ARIF (photo auto-loads from repo once images/arif.jpg exists) -->
+    <article class="cbpteam__card">
+      <div class="cbpteam__photo"><img src="https://raw.githubusercontent.com/cbpsj102025-hash/cbpsj-web-assets/main/images/arif.jpg" alt="عارف البلوشي" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><span class="cbpteam__initials" style="display:none">AB</span></div>
+      <div class="cbpteam__body">
+        <p class="cbpteam__role">منسق مكتب الاستقبال</p>
+        <h3 class="cbpteam__name">عارف البلوشي</h3>
+        <div class="cbpteam__chips">
+          <span class="cbpteam__chip cbpteam__chip--nat">عُماني</span>
+          <span class="cbpteam__chip">تنسيق التأمين</span>
+          <span class="cbpteam__chip">مقدّم <bdi>BLS &amp; AED</bdi></span>
+        </div>
+        <div class="cbpteam__bio"><div><p>عارف موظف عُماني يتمتع بخبرة تتجاوز 10 سنوات في خدمة العملاء بقطاع الرعاية الصحية وتنسيق التأمين. وبصفته منسق مكتب الاستقبال، غالبًا ما يكون أول من يستقبل المرضى، ويرشدهم خلال حجز المواعيد وإجراءات التأمين. ويُعرف بأسلوبه الكفؤ والمتعاطف، ويركّز على سلاسة الإجراءات الإدارية وبناء علاقات قوية قائمة على الثقة مع كل مريض.</p></div></div>
+        <button class="cbpteam__toggle" aria-expanded="false"><span class="label-more">اقرأ السيرة كاملة</span><span class="label-less">عرض أقل</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </article>
+
+    <!-- 10 WALAA (photo auto-loads from repo once images/walaa.jpg exists) -->
+    <article class="cbpteam__card">
+      <div class="cbpteam__photo"><img src="https://raw.githubusercontent.com/cbpsj102025-hash/cbpsj-web-assets/main/images/walaa.jpg" alt="ولاء الغيثي" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><span class="cbpteam__initials" style="display:none">WG</span></div>
+      <div class="cbpteam__body">
+        <p class="cbpteam__role">منسقة رعاية المرضى</p>
+        <h3 class="cbpteam__name">ولاء الغيثي</h3>
+        <div class="cbpteam__chips">
+          <span class="cbpteam__chip cbpteam__chip--nat">عُمانية</span>
+          <span class="cbpteam__chip">مقدّمة <bdi>BLS &amp; AED</bdi></span>
+        </div>
+        <div class="cbpteam__bio"><div><p>ولاء موظفة عُمانية من أصول شرق إفريقية تعمل منسقة رعاية المرضى في العيادة. وبخلفيتها في خدمة العملاء والتعليم، تتمتع بمهارات تواصل قوية والتزام صادق بدعم المرضى. وتجيد العربية والإنجليزية إلى جانب السواحيلية، وتساعد قاعدة مرضى متنوعة على الشعور بالراحة والاطلاع الجيد. ويركّز عملها على التواصل الواضح والتنسيق، بحيث يفهم كل مريض رعايته ويشعر بدعم الفريق.</p></div></div>
+        <button class="cbpteam__toggle" aria-expanded="false"><span class="label-more">اقرأ السيرة كاملة</span><span class="label-less">عرض أقل</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </article>
+
+  </div>
+</div>
+
+<script>
+  (function () {
+    document.querySelectorAll('.cbpteam__toggle').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var card = btn.closest('.cbpteam__card');
+        var open = card.classList.toggle('is-open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        setTimeout(postHeight, 450);
+      });
+    });
+    function postHeight(){
+      var h = document.documentElement.scrollHeight;
+      if (window.parent) window.parent.postMessage({ cbpteamHeight: h }, '*');
+    }
+    window.postHeight = postHeight;
+    window.addEventListener('load', postHeight);
+    window.addEventListener('resize', postHeight);
+    [200, 700, 1600].forEach(function(t){ setTimeout(postHeight, t); });
+  })();
+</script>
+
+</body>
+</html>
