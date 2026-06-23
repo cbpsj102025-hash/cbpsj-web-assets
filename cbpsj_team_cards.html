@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CBP Precision Spine Center — Our Team</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;background:transparent}
+  .cbpteam {
+    --teal: #16B6BA; --teal-dark: #0f8e91; --charcoal: #2C3E45; --ink: #233138;
+    --muted: #6b7c84; --line: #e6ecee; --tint: rgba(22,182,186,.09); --card: #ffffff;
+    --shadow: 0 1px 2px rgba(44,62,69,.06), 0 8px 24px rgba(44,62,69,.06);
+    --shadow-hover: 0 6px 14px rgba(44,62,69,.10), 0 22px 48px rgba(44,62,69,.16);
+    box-sizing: border-box; width: 100%; max-width: 1180px; margin: 0 auto; padding: 16px;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif; color: var(--ink);
+  }
+  .cbpteam *, .cbpteam *::before, .cbpteam *::after { box-sizing: border-box; }
+  .cbpteam__head { text-align: center; max-width: 640px; margin: 8px auto 40px; }
+  .cbpteam__eyebrow { font-family: 'Bebas Neue', sans-serif; letter-spacing: .18em; font-size: 15px; color: var(--teal-dark); text-transform: uppercase; margin: 0 0 10px; }
+  .cbpteam__title { font-weight: 700; font-size: clamp(26px, 4vw, 40px); line-height: 1.1; letter-spacing: -.01em; color: var(--charcoal); margin: 0 0 12px; }
+  .cbpteam__sub { font-size: 16px; line-height: 1.6; color: var(--muted); margin: 0; }
+  .cbpteam__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 24px; }
+  .cbpteam__card { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease; display: flex; flex-direction: column; }
+  .cbpteam__card::before { content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 0; background: linear-gradient(180deg, var(--teal), var(--teal-dark)); transition: height .45s cubic-bezier(.2,.7,.2,1); z-index: 3; }
+  .cbpteam__card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); }
+  .cbpteam__card:hover::before { height: 100%; }
+  .cbpteam__photo { position: relative; aspect-ratio: 1 / 1; overflow: hidden; background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%); }
+  .cbpteam__photo img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+  .cbpteam__card:hover .cbpteam__photo img { transform: scale(1.05); }
+  .cbpteam__initials { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 56px; letter-spacing: .04em; color: rgba(255,255,255,.92); }
+  .cbpteam__body { padding: 20px 20px 18px; display: flex; flex-direction: column; flex: 1; }
+  .cbpteam__role { font-family: 'Bebas Neue', sans-serif; text-transform: uppercase; letter-spacing: .14em; font-size: 13px; color: var(--teal-dark); margin: 0 0 4px; }
+  .cbpteam__name { font-size: 18px; font-weight: 600; letter-spacing: -.01em; color: var(--charcoal); margin: 0 0 12px; line-height: 1.3; }
+  .cbpteam__chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 4px; }
+  .cbpteam__chip { font-size: 11.5px; font-weight: 500; color: var(--teal-dark); background: var(--tint); padding: 5px 10px; border-radius: 999px; line-height: 1.2; }
+  .cbpteam__chip--nat { background: #eef2f3; color: var(--charcoal); }
+  .cbpteam__bio { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .4s cubic-bezier(.2,.7,.2,1); }
+  .cbpteam__bio > div { overflow: hidden; }
+  .cbpteam__bio p { font-size: 14px; line-height: 1.62; color: var(--muted); margin: 14px 0 0; }
+  .cbpteam__card.is-open .cbpteam__bio { grid-template-rows: 1fr; }
+  .cbpteam__toggle { margin-top: auto; padding-top: 16px; background: none; border: none; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 13.5px; font-weight: 600; color: var(--teal-dark); display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; }
+  .cbpteam__toggle svg { transition: transform .35s ease; }
+  .cbpteam__card.is-open .cbpteam__toggle svg { transform: rotate(180deg); }
+  .cbpteam__toggle:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; border-radius: 4px; }
+  .cbpteam__toggle .label-more { display: inline; } .cbpteam__toggle .label-less { display: none; }
+  .cbpteam__card.is-open .cbpteam__toggle .label-more { display: none; }
+  .cbpteam__card.is-open .cbpteam__toggle .label-less { display: inline; }
+  .cbpteam[dir="rtl"] { font-family: 'Cairo', sans-serif; }
+  .cbpteam[dir="rtl"] .cbpteam__card::before { left: auto; right: 0; }
+  .cbpteam[dir="rtl"] .cbpteam__name, .cbpteam[dir="rtl"] .cbpteam__title { font-family: 'Cairo', sans-serif; }
+  @media (prefers-reduced-motion: reduce) { .cbpteam__card, .cbpteam__card::before, .cbpteam__photo img, .cbpteam__bio, .cbpteam__toggle svg { transition: none !important; } }
+  @media (max-width: 600px) {
+    .cbpteam { padding: 12px; }
+    .cbpteam__head { margin-bottom: 28px; }
+    .cbpteam__grid { gap: 16px; }
+    .cbpteam__body { padding: 16px; }
+    .cbpteam__name { font-size: 17px; }
+    .cbpteam__sub { font-size: 15px; }
+    .cbpteam__eyebrow { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cbpteam">
+
+  <div class="cbpteam__head">
+    <p class="cbpteam__eyebrow">The People Behind Your Care</p>
+    <h2 class="cbpteam__title">Meet the CBP Precision team</h2>
+    <p class="cbpteam__sub">A clinical team built around precise, measurable spinal correction — and around looking after you while it happens.</p>
+  </div>
+
+  <div class="cbpteam__grid">
+
+    <!-- 1 RICHARD -->
+    <article class="cbpteam__card">
+      <div class="cbpteam__photo"><img src="https://raw.githubusercontent.com/cbpsj102025-hash/cbpsj-web-assets/main/images/richard.jpg" alt="Dr. Richard Marchetti"></div>
+      <div class="cbpteam__body">
+        <p class="cbpteam__role">Clinic Owner/Director · Head Chiropractor</p>
+        <h3 class="cbpteam__name">Dr. Richard Marchetti, DC</h3>
+        <div class="cbpteam__chips">
+          <span class="cbpteam__chip cbpteam__chip--nat">American</span>
+          <span class="cbpteam__chip">Doctor of Chiropractic</span>
+          <span class="cbpteam__chip">Advanced CBP® Certified</span>
+          <span class="cbpteam__chip">CBP® Basic Certified</span>
+          <span class="cbpteam__chip">ScoliBrace® Certified</span>
+          <span class="cbpteam__chip">Sole Supports® Certified</span>
+          <span class="cbpteam__chip">BLS &amp; AED Provider</span>
+        </div>
+        <div class="cbpteam__bio"><div><p>Dr. Richard founded CBP Precision Spine Center and leads its structural correction work as Head Chiropractor. A Parker College of Chiropractic graduate with more than 18 years of global experience in chiropractic care and scoliosis management, he holds Advanced CBP® certification — one of fewer than 200 practitioners worldwide and the first in the region. His focus is postural and structural correction for conditions such as neck pain, back pain, and spinal degeneration, always grounded in evidence-based care. Based in Muscat for over a decade, he pairs precise, measurable correction with nutritional guidance to support each patient's long-term health.</p></div></div>
+        <button class="cbpteam__toggle" aria-expanded="false"><span class="label-more">Read full bio</span><span class="label-less">Show less</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </article>
+
+    <!-- 2 ALICIA -->
+    <article class="cbpteam__card">
+      <div class="cbpteam__photo"><img src="https://raw.githubusercontent.com/cbpsj102025-hash/cbpsj-web-assets/main/images/alicia.jpg" alt="Dr. Alicia Marchetti"></div>
+      <div class="cbpteam__body">
+        <p class="cbpteam__role">Operations Officer · Co-Owner</p>
+        <h3 class="cbpteam__name">Dr. Alicia Marchetti, DHA, MHA, MT</h3>
+        <div class="cbpteam__chips">
+          <span class="cbpteam__chip cbpteam__chip--nat">American</span>
+          <span class="cbpteam__chip">Healthcare Administration</span>
+          <span class="cbpteam__chip">Scoliosis Management</span>
+          <span class="cbpteam__chip">OMT Spinal Manipulation</span>
+          <span class="cbpteam__chip">ScoliBrace® Certified</span>
+          <span class="cbpteam__chip">Sole Supports® Certified</span>
+          <span class="cbpteam__chip">BLS &amp; AED Provider</span>
+        </div>
+        <div class="cbpteam__bio"><div><p>Alicia co-owns CBP Precision Spine Center and leads its day-to-day operations, drawing on more than 15 years in healthcare across both clinical and administrative roles. She oversees clinic operations, patient scheduling, and staff coordination, with a focus on a smooth, well-run experience from the first call through follow-up care. She holds a Master's and a Doctorate in Healthcare Administration, alongside a clinical background in manual and massage therapy and certifications including Scoliosis Management and OMT spinal manipulation. Her priority is keeping the clinic organised and patient-focused so the clinical team can do their best work.</p></div></div>
+        <button class="cbpteam__toggle" aria-expanded="false"><span class="label-more">Read full bio</span><span class="label-less">Show less</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </article>
+
+    <!-- 3 CORALIE -->
+    <article class="cbpteam__card">
+      <div class="cbpteam__photo"><img src="https://raw.githubusercontent.com/cbpsj102025-hash/cbpsj-web-assets/main/images/coralie.jpg" alt="Coralie Goubier"></div>
+      <div class="cbpteam__body">
+        <p class="cbpteam__role">Chiropractor</p>
+        <h3 class="cbpteam__name">Coralie Goubier, M.Sc.</h3>
+        <div class="cbpteam__chips">
+          <span class="cbpteam__chip cbpteam__chip--nat">French</span>
+          <span class="cbpteam__chip">Master of Chiropractic</span>
+          <span class="cbpteam__chip">Applied Kinesiology</span>
+          <span class="cbpteam__chip">Gonstead Technique</span>
+          <span class="cbpteam__chip">BLS &amp; AED Provider</span>
+        </div>
+        <div class="cbpteam__bio"><div><p>Coralie qualified as a chiropractor in France at IFEC, Paris–Toulouse, and has since practised across France, India, and the Philippines before joining CBP. She works with a range of structural and musculoskeletal cases, drawing on technique training that includes Applied Kinesiology, Gonstead, and Sacro Occipital Technique. A native French speaker who is also fluent in English and conversational in Spanish, she brings an international, patient-centred approach. Her focus is careful, individualised correction tailored to each person's needs.</p></div></div>
+        <button class="cbpteam__toggle" aria-expanded="false"><span class="label-more">Read full bio</span><span class="label-less">Show less</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </article>
+
+    <!-- 4 IMAN -->
+    <article class="cbpteam__card">
+      <div class="cbpteam__photo"><img src="https://raw.githubusercontent.com/cbpsj102025-hash/cbpsj-web-assets/main/images/iman.jpg" alt="Dr. Iman Mohammed"></div>
+      <div class="cbpteam__body">
+        <p class="cbpteam__role">In-house General Practitioner</p>
+        <h3 class="cbpteam__name">Dr. Iman Mohammed, GP</h3>
+        <div class="cbpteam__chips">
+          <span class="cbpteam__chip cbpteam__chip--nat">Sudanese</span>
+          <span class="cbpteam__chip">General Practitioner</span>
+          <span class="cbpteam__chip">MBBS</span>
+          <span class="cbpteam__chip">ACLS Certified</span>
+          <span class="cbpteam__chip">BLS &amp; AED Provider</span>
+        </div>
+        <div class="cbpteam__bio"><div><p>Dr. Iman is the clinic's in-house General Practitioner, providing medical assessment alongside the structural-care team. She holds a Bachelor of Medicine and Surgery (MBBS) from Gezira University and is a registered medical practitioner with several years of clinical experience across hospital and medical-centre settings in Sudan and Egypt. With a careful, compassionate approach, she helps ensure each patient's care is considered from a full medical perspective.</p></div></div>
+        <button class="cbpteam__toggle" aria-expanded="false"><span class="label-more">Read full bio</span><span class="label-less">Show less</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </article>
+
+    <!-- 5 FELICE -->
+    <article class="cbpteam__card">
+      <div class="cbpteam__photo"><img src="https://raw.githubusercontent.com/cbpsj102025-hash/cbpsj-web-assets/main/images/felice.jpg" alt="Felice Cayabyab"></div>
+      <div class="cbpteam__body">
+        <p class="cbpteam__role">Head Physiotherapist</p>
+        <h3 class="cbpteam__name">Felice Cayabyab, BSPT</h3>
+        <div class="cbpteam__chips">
+          <span class="cbpteam__chip cbpteam__chip--nat">Filipino</span>
+          <span class="cbpteam__chip">Sports Physiotherapy</span>
+          <span class="cbpteam__chip">BLS &amp; AED Provider</span>
+        </div>
+        <div class="cbpteam__bio"><div><p>Felice leads the physiotherapy team, bringing 13 years of experience in musculoskeletal injuries, pre- and post-surgical orthopaedic rehabilitation, and sports injuries. A Bachelor of Science in Physical Therapy graduate, she combines manual therapy with modalities such as shockwave therapy, and her background spans sports physiotherapy and neurological rehabilitation. Detail-focused and empathetic, she tailors holistic, individualised care to each patient's needs.</p></div></div>
+        <button class="cbpteam__toggle" aria-expanded="false"><span class="label-more">Read full bio</span><span class="label-less">Show less</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </article>
+
+    <!-- 6 IYAD -->
+    <article class="cbpteam__card">
+      <div class="cbpteam__photo"><img src="https://raw.githubusercontent.com/cbpsj102025-hash/cbpsj-web-assets/main/images/iyad.jpg" alt="Iyad Ali"></div>
+      <div class="cbpteam__body">
+        <p class="cbpteam__role">Physiotherapist</p>
+        <h3 class="cbpteam__name">Iyad Ali, BHSc, PT</h3>
+        <div class="cbpteam__chips">
+          <span class="cbpteam__chip cbpteam__chip--nat">Syrian</span>
+          <span class="cbpteam__chip">Laser Therapy</span>
+          <span class="cbpteam__chip">Shockwave Therapy</span>
+          <span class="cbpteam__chip">BLS &amp; AED Provider</span>
+        </div>
+        <div class="cbpteam__bio"><div><p>Iyad is a physiotherapist from Syria with over a decade of experience across musculoskeletal, neurological, and rehabilitation cases. A Bachelor of Science in Physical Therapy graduate from Al-Baath University, he combines hands-on therapy with modalities such as laser and shockwave therapy, and brings both clinical and teaching experience. Since relocating to Oman in 2017, he has worked in several respected centres before joining CBP, where he assesses patients, builds care plans, and guides corrective exercise and traction programmes. Fluent in Arabic and English, he holds himself to high standards and stays focused on each patient's recovery and quality of life.</p></div></div>
+        <button class="cbpteam__toggle" aria-expanded="false"><span class="label-more">Read full bio</span><span class="label-less">Show less</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </article>
+
+    <!-- 7 ESSRAA (photo auto-loads from repo once images/essraa.jpg exists) -->
+    <article class="cbpteam__card">
+      <div class="cbpteam__photo"><img src="https://raw.githubusercontent.com/cbpsj102025-hash/cbpsj-web-assets/main/images/essraa.jpg" alt="Essraa Hassan Al Shareef" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><span class="cbpteam__initials" style="display:none">EA</span></div>
+      <div class="cbpteam__body">
+        <p class="cbpteam__role">Physiotherapist</p>
+        <h3 class="cbpteam__name">Essraa Hassan Al Shareef, BHSc, PT</h3>
+        <div class="cbpteam__chips">
+          <span class="cbpteam__chip cbpteam__chip--nat">Sudanese</span>
+          <span class="cbpteam__chip">Dry Needling Certified</span>
+          <span class="cbpteam__chip">BLS &amp; AED Provider</span>
+        </div>
+        <div class="cbpteam__bio"><div><p>Essraa is a physiotherapist with close to a decade of hospital and spine-care experience, spanning orthopaedic, neurological, paediatric, and pre- and post-surgical rehabilitation. She brings that breadth to each patient's care at CBP, with a calm, detail-focused manner and genuine dedication to every case. A 2016 physiotherapy graduate, she is currently pursuing a Master's in Health Management, Planning and Leadership. For Essraa, care works best when professionalism meets real passion — and that's the spirit she brings to every session.</p></div></div>
+        <button class="cbpteam__toggle" aria-expanded="false"><span class="label-more">Read full bio</span><span class="label-less">Show less</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </article>
+
+    <!-- 8 NASRA -->
+    <article class="cbpteam__card">
+      <div class="cbpteam__photo"><img src="https://raw.githubusercontent.com/cbpsj102025-hash/cbpsj-web-assets/main/images/nasra.jpg" alt="Nasra Al Harthi"></div>
+      <div class="cbpteam__body">
+        <p class="cbpteam__role">Chiropractic Assistant</p>
+        <h3 class="cbpteam__name">Nasra Al Harthi, CA</h3>
+        <div class="cbpteam__chips">
+          <span class="cbpteam__chip cbpteam__chip--nat">Omani</span>
+          <span class="cbpteam__chip">First Omani CA</span>
+          <span class="cbpteam__chip">BLS &amp; AED Provider</span>
+          <span class="cbpteam__chip">Parker University Trained</span>
+        </div>
+        <div class="cbpteam__bio"><div><p>Nasra is the first Omani to be certified as a Chiropractic Assistant (CA), with eight years of experience in patient care. She supports patients through their treatment and helps maintain safe, effective care alongside the clinical team. Certified in BLS and CPR/AED, she has also completed the Chiropractic Assistant Training Program at Parker University in the USA. Fluent in Arabic, English, and Swahili, she is passionate about supporting patients and helping them feel at ease.</p></div></div>
+        <button class="cbpteam__toggle" aria-expanded="false"><span class="label-more">Read full bio</span><span class="label-less">Show less</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </article>
+
+    <!-- 9 ARIF (photo auto-loads from repo once images/arif.jpg exists) -->
+    <article class="cbpteam__card">
+      <div class="cbpteam__photo"><img src="https://raw.githubusercontent.com/cbpsj102025-hash/cbpsj-web-assets/main/images/arif.jpg" alt="Arif Al Balushi" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><span class="cbpteam__initials" style="display:none">AB</span></div>
+      <div class="cbpteam__body">
+        <p class="cbpteam__role">Front Desk Coordinator</p>
+        <h3 class="cbpteam__name">Arif Al Balushi</h3>
+        <div class="cbpteam__chips">
+          <span class="cbpteam__chip cbpteam__chip--nat">Omani</span>
+          <span class="cbpteam__chip">Insurance Coordination</span>
+          <span class="cbpteam__chip">BLS &amp; AED Provider</span>
+        </div>
+        <div class="cbpteam__bio"><div><p>Arif is an Omani professional with more than 10 years of experience in healthcare customer service and insurance coordination. As Front Desk Coordinator, he is often the first person to welcome patients, guiding them through scheduling and insurance. Known for an efficient, empathetic manner, he focuses on smooth administrative processes and building strong, trusting relationships with every patient.</p></div></div>
+        <button class="cbpteam__toggle" aria-expanded="false"><span class="label-more">Read full bio</span><span class="label-less">Show less</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </article>
+
+    <!-- 10 WALAA (photo auto-loads from repo once images/walaa.jpg exists) -->
+    <article class="cbpteam__card">
+      <div class="cbpteam__photo"><img src="https://raw.githubusercontent.com/cbpsj102025-hash/cbpsj-web-assets/main/images/walaa.jpg" alt="Walaa Al Gaithi" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><span class="cbpteam__initials" style="display:none">WG</span></div>
+      <div class="cbpteam__body">
+        <p class="cbpteam__role">Patient Care Liaison</p>
+        <h3 class="cbpteam__name">Walaa Al Gaithi</h3>
+        <div class="cbpteam__chips">
+          <span class="cbpteam__chip cbpteam__chip--nat">Omani</span>
+          <span class="cbpteam__chip">BLS &amp; AED Provider</span>
+        </div>
+        <div class="cbpteam__bio"><div><p>Walaa is an Omani professional with East African heritage who serves as the clinic's Patient Care Liaison. With a background in customer service and education, she brings strong communication skills and a genuine commitment to patient support. Fluent in Arabic and English with additional Swahili, she helps a diverse patient base feel comfortable and well-informed. Her focus is clear communication and coordination, so every patient understands their care and feels supported by the team.</p></div></div>
+        <button class="cbpteam__toggle" aria-expanded="false"><span class="label-more">Read full bio</span><span class="label-less">Show less</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+      </div>
+    </article>
+
+  </div>
+</div>
+
+<script>
+  (function () {
+    document.querySelectorAll('.cbpteam__toggle').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var card = btn.closest('.cbpteam__card');
+        var open = card.classList.toggle('is-open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        setTimeout(postHeight, 450);
+      });
+    });
+    function postHeight(){
+      var h = document.documentElement.scrollHeight;
+      if (window.parent) window.parent.postMessage({ cbpteamHeight: h }, '*');
+    }
+    window.postHeight = postHeight;
+    window.addEventListener('load', postHeight);
+    window.addEventListener('resize', postHeight);
+    [200, 700, 1600].forEach(function(t){ setTimeout(postHeight, t); });
+  })();
+</script>
+
+</body>
+</html>
