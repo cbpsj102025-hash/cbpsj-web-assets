@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مدوّنة صحة العمود الفقري — فلتر</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Cairo','Inter',sans-serif; background:#f5f5f5; padding:32px 20px; }
+  .blog-section { max-width:1100px; margin:0 auto; }
+  .group-heading { font-size:20px; font-weight:600; color:#2C3E45; margin-bottom:22px; padding-bottom:9px; border-bottom:3px solid #16B6BA; display:none; }
+  html[dir="rtl"] .group-heading { display:none; }
+
+  /* FILTER BAR */
+  .filter-bar { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:34px; }
+  .filter-btn { padding:9px 22px; border-radius:30px; border:1.5px solid #16B6BA; background:#fff; color:#16B6BA;
+    font-size:13px; font-weight:500; cursor:pointer; transition:background .2s,color .2s; font-family:'Cairo','Inter',sans-serif; }
+  .filter-btn:hover { background:#e6f8f8; }
+  .filter-btn.active { background:#16B6BA; color:#fff; }
+
+  /* GRID */
+  .cards-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:24px; }
+
+  /* CARD — rounded top, flat bottom thumb, category tag upper-start */
+  .post-card { display:flex; flex-direction:column; background:#fff; border:1px solid #e5e5e5; border-radius:14px;
+    overflow:hidden; text-decoration:none; transition:transform .25s,box-shadow .25s,border-color .25s; }
+  .post-card:hover { transform:translateY(-4px); box-shadow:0 18px 40px -22px rgba(12,94,98,.45); border-color:#16B6BA; }
+  .post-card.hidden { display:none; }
+
+  .post-thumb { position:relative; aspect-ratio:16/10; overflow:hidden; background:#eef5f5; }
+  .post-thumb img.thumb { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:1; }
+  .post-thumb img.thumb.miss { display:none; }
+  .post-thumb::after { content:attr(data-label); position:absolute; inset:0; z-index:0; display:flex;
+    align-items:center; justify-content:center; text-align:center; padding:12px;
+    background:linear-gradient(150deg,#0c5e62,#16b6ba); color:rgba(255,255,255,.95);
+    font-size:11px; font-weight:600; letter-spacing:.02em; font-family:monospace; word-break:break-all; }
+  .cat { position:absolute; z-index:2; inset-inline-start:12px; top:12px; font-size:11px; font-weight:700;
+    letter-spacing:.1em; text-transform:uppercase; color:#fff; background:rgba(0,0,0,.30); padding:5px 11px; border-radius:999px; }
+  html[dir="rtl"] .cat { letter-spacing:0; }
+
+  .post-body { padding:16px 18px; display:flex; flex-direction:column; gap:7px; flex:1; }
+  .post-body h3 { margin:0; font-size:16px; font-weight:600; color:#2C3E45; line-height:1.4; }
+  .post-body p { margin:0; font-size:13px; line-height:1.65; color:#555; }
+  .post-meta { margin-top:auto; padding-top:8px; font-size:12px; color:#16B6BA; font-weight:600; }
+
+  .no-results { display:none; grid-column:1 / -1; text-align:center; padding:40px 20px; color:#999; font-size:14px; }
+
+  @media (max-width:700px) {
+    body { padding:20px 12px; }
+    .cards-grid { grid-template-columns:1fr; gap:18px; }
+  }
+</style>
+</head>
+<body>
+<div class="blog-section">
+
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">الكل</button>
+    <button class="filter-btn" data-filter="back-pain">ألم الظهر</button>
+    <button class="filter-btn" data-filter="neck-posture">الرقبة والقوام</button>
+    <button class="filter-btn" data-filter="wellness">العافية</button>
+    <button class="filter-btn" data-filter="treatments">العلاجات</button>
+    <button class="filter-btn" data-filter="headaches">الصداع</button>
+    <button class="filter-btn" data-filter="scoliosis">الجنف</button>
+  </div>
+
+  <div class="group-heading" id="groupHeading"></div>
+
+  <div class="cards-grid" id="cardsGrid">
+      <a class="post-card" data-category="scoliosis" href="blog-scoliosis-oman-scolibrace.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/scoliosis-oman-scolibrace.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/scoliosis-oman-scolibrace.jpg" alt="الجنف في عُمان: دليلك الكامل للتشخيص والعلاج و ScoliBrace®" onerror="this.classList.add('miss')">
+          <span class="cat">الجنف</span>
+        </div>
+        <div class="post-body">
+          <h3>الجنف في عُمان: التشخيص والعلاج و ScoliBrace®</h3>
+          <p>دليل كامل لعائلات عُمان — رعاية غير جراحية، وأسئلة شائعة، وكيف يعمل تقويم ScoliBrace®.</p>
+          <div class="post-meta"><span class="dt">٢٥ يونيو ٢٠٢٦</span> · اقرأ ←</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="wellness" href="blog-silent-spine-destroyer.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/silent-spine-destroyer.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/silent-spine-destroyer.jpg" alt="المدمّر الصامت للعمود الفقري: فيتامين د وعمودك الفقري" onerror="this.classList.add('miss')">
+          <span class="cat">العافية</span>
+        </div>
+        <div class="post-body">
+          <h3>المدمّر الصامت للعمود الفقري: فيتامين د وعمودك الفقري</h3>
+          <p>كيف يؤثّر نقص فيتامين د بصمت على صحة العمود الفقري في عُمان ودول الخليج المشمسة — وما الحل.</p>
+          <div class="post-meta"><span class="dt">15 يونيو 2026</span> · اقرأ ←</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="back-pain" href="blog-office-back-pain.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/office-back-pain.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/office-back-pain.jpg" alt="آلام الظهر المكتبية: كيف يضرّ كرسيك بعمودك الفقري" onerror="this.classList.add('miss')">
+          <span class="cat">ألم الظهر</span>
+        </div>
+        <div class="post-body">
+          <h3>آلام الظهر المكتبية: كيف يضرّ كرسيك بعمودك الفقري</h3>
+          <p>لماذا يعاني 60% من موظفي المكاتب في الخليج، وكيف تقدّم رعاية CBP الدقيقة راحة دائمة.</p>
+          <div class="post-meta"><span class="dt">4 يونيو 2026</span> · اقرأ ←</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="scoliosis" href="blog-scoliosis-children.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/scoliosis-children.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/scoliosis-children.jpg" alt="الجنف عند الأطفال: لماذا يهم الفحص المبكر" onerror="this.classList.add('miss')">
+          <span class="cat">الجنف</span>
+        </div>
+        <div class="post-body">
+          <h3>الجنف عند الأطفال: لماذا يهم الفحص المبكر</h3>
+          <p>كيف يمكن للكشف المبكر والرعاية المتقدمة بواسطة ScoliBrace® أن يغيّرا مسار جنف المراهقة.</p>
+          <div class="post-meta"><span class="dt">28 مايو 2026</span> · اقرأ ←</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="headaches" href="blog-cervicogenic-migraine.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/cervicogenic-migraine.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/cervicogenic-migraine.jpg" alt="لماذا قد يكون صداعك النصفي قادماً من رقبتك" onerror="this.classList.add('miss')">
+          <span class="cat">الصداع</span>
+        </div>
+        <div class="post-body">
+          <h3>لماذا قد يكون صداعك النصفي قادماً من رقبتك</h3>
+          <p>دليل مسقط لصداع المنشأ العنقي، وكيف قد يغيّره تصحيح الرقبة.</p>
+          <div class="post-meta"><span class="dt">12 مايو 2026</span> · اقرأ ←</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="headaches" href="blog-headache-relief.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/headache-relief.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/headache-relief.jpg" alt="تخفيف الصداع من خلال العناية بتقويم العمود الفقري" onerror="this.classList.add('miss')">
+          <span class="cat">الصداع</span>
+        </div>
+        <div class="post-body">
+          <h3>تخفيف الصداع من خلال العناية بتقويم العمود الفقري</h3>
+          <p>طرق فعّالة لتخفيف صداع التوتر بالرعاية الكايروبراكتيكية وتقنيات بسيطة في المنزل.</p>
+          <div class="post-meta"><span class="dt">6 مايو 2026</span> · اقرأ ←</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="neck-posture" href="blog-tech-neck.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/tech-neck.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/tech-neck.jpg" alt="رقبة التكنولوجيا في مسقط: كيف يعيد هاتفك تشكيل عمودك الفقري" onerror="this.classList.add('miss')">
+          <span class="cat">الرقبة والقوام</span>
+        </div>
+        <div class="post-body">
+          <h3>رقبة التكنولوجيا في مسقط: كيف يعيد هاتفك تشكيل عمودك الفقري</h3>
+          <p>ما تفعله وضعية الرأس الأمامية بالعمود الفقري — وما الذي ينبغي فعله.</p>
+          <div class="post-meta"><span class="dt">25 أبريل 2026</span> · اقرأ ←</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="neck-posture" href="blog-sleep-spine.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/sleep-spine.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/sleep-spine.jpg" alt="النوم والعمود الفقري: كيف تؤثر وسادتك على التعافي" onerror="this.classList.add('miss')">
+          <span class="cat">الرقبة والقوام</span>
+        </div>
+        <div class="post-body">
+          <h3>النوم والعمود الفقري: كيف تؤثر وسادتك على التعافي</h3>
+          <p>كيف تدعم وضعية النوم الصحيحة تصحيح العمود الفقري وفق منهج CBP والتعافي أثناء الليل.</p>
+          <div class="post-meta"><span class="dt">14 أبريل 2026</span> · اقرأ ←</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="back-pain" href="blog-back-pain-returns.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/back-pain-returns.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/back-pain-returns.jpg" alt="لماذا يعود ألم الظهر بعد العمل" onerror="this.classList.add('miss')">
+          <span class="cat">ألم الظهر</span>
+        </div>
+        <div class="post-body">
+          <h3>لماذا يعود ألم الظهر بعد العمل</h3>
+          <p>من أكثر الشكاوى شيوعاً التي نراها، وما هو الحل الأمثل طويل الأمد لها.</p>
+          <div class="post-meta"><span class="dt">8 أبريل 2026</span> · اقرأ ←</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="back-pain" href="blog-herniated-disc.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/herniated-disc.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/herniated-disc.jpg" alt="انزلاق غضروفي في مسقط؟ اقرأ هذا قبل أن تفكّر في الجراحة" onerror="this.classList.add('miss')">
+          <span class="cat">ألم الظهر</span>
+        </div>
+        <div class="post-body">
+          <h3>انزلاق غضروفي في مسقط؟ اقرأ هذا قبل أن تفكّر في الجراحة</h3>
+          <p>توصي الإرشادات الدولية بالعلاج التحفّظي أولاً. كيف يبدو العلاج غير الجراحي للديسك في مركز الدقة.</p>
+          <div class="post-meta"><span class="dt">2 أبريل 2026</span> · اقرأ ←</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="wellness" href="blog-summer-heat-spine.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/summer-heat-spine.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/summer-heat-spine.jpg" alt="لماذا يعاني عمودك الفقري في حرّ الصيف الخليجي" onerror="this.classList.add('miss')">
+          <span class="cat">العافية</span>
+        </div>
+        <div class="post-body">
+          <h3>لماذا يعاني عمودك الفقري في حرّ الصيف الخليجي</h3>
+          <p>الرابط الخفي بين الجفاف وآلام الظهر، ولماذا يجلب الصيف مشاكل أكثر للأقراص في مسقط.</p>
+          <div class="post-meta"><span class="dt">20 مارس 2026</span> · اقرأ ←</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="back-pain" href="blog-chiropractic-back-pain.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/chiropractic-back-pain.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/chiropractic-back-pain.jpg" alt="الرعاية بتقويم العمود الفقري: الحل الأمثل لآلام الظهر" onerror="this.classList.add('miss')">
+          <span class="cat">ألم الظهر</span>
+        </div>
+        <div class="post-body">
+          <h3>الرعاية بتقويم العمود الفقري: الحل الأمثل لآلام الظهر</h3>
+          <p>كيف يوفّر تقويم العمود الفقري حلاً طبيعياً وطويل الأمد لآلام الظهر، بعيداً عن المسكنات والحلول المؤقتة.</p>
+          <div class="post-meta"><span class="dt">18 مارس 2026</span> · اقرأ ←</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="wellness" href="blog-pregnancy-back-pain.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/pregnancy-back-pain.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/pregnancy-back-pain.jpg" alt="لماذا تعاني 8 من كل 10 حوامل في مسقط من آلام الظهر" onerror="this.classList.add('miss')">
+          <span class="cat">العافية</span>
+        </div>
+        <div class="post-body">
+          <h3>لماذا تعاني 8 من كل 10 حوامل في مسقط من آلام الظهر</h3>
+          <p>الحقيقة حول مشاكل العمود الفقري المرتبطة بالحمل، وكيف تدعم رعاية CBP الأمهات الحوامل.</p>
+          <div class="post-meta"><span class="dt">12 مارس 2026</span> · اقرأ ←</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="neck-posture" href="blog-neck-pain-cervical.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/neck-pain-cervical.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/neck-pain-cervical.jpg" alt="فهم آلام الرقبة والانزياحات العنقية" onerror="this.classList.add('miss')">
+          <span class="cat">الرقبة والقوام</span>
+        </div>
+        <div class="post-body">
+          <h3>فهم آلام الرقبة والانزياحات العنقية</h3>
+          <p>كيف يمكن لتقويم العمود الفقري القائم على البيوفيزياء أن يساعد في آلام الرقبة المزمنة.</p>
+          <div class="post-meta"><span class="dt">22 فبراير 2026</span> · اقرأ ←</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="treatments" href="blog-medical-massage.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/medical-massage.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/medical-massage.jpg" alt="أهمية التدليك الطبي مقارنة بتدليك الاسترخاء" onerror="this.classList.add('miss')">
+          <span class="cat">العلاجات</span>
+        </div>
+        <div class="post-body">
+          <h3>أهمية التدليك الطبي مقارنة بتدليك الاسترخاء</h3>
+          <p>لماذا يوفّر التدليك الطبي نتائج أعمق وأطول أمداً من جلسة الاسترخاء العادية.</p>
+          <div class="post-meta"><span class="dt">10 فبراير 2026</span> · اقرأ ←</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="treatments" href="blog-foot-pain-orthotics.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/foot-pain-orthotics.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/foot-pain-orthotics.jpg" alt="آلام القدم في مسقط: لماذا تقويمات Sole Supports® المخصصة" onerror="this.classList.add('miss')">
+          <span class="cat">العلاجات</span>
+        </div>
+        <div class="post-body">
+          <h3>آلام القدم في مسقط: لماذا تقويمات Sole Supports® المخصصة</h3>
+          <p>كيف توفّر التقويمات المخصصة راحة دائمة، لا مجرد تخفيف مؤقت، لمحاذاة القدم والعمود الفقري.</p>
+          <div class="post-meta"><span class="dt">6 يناير 2026</span> · اقرأ ←</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="back-pain" href="blog-piriformis-syndrome.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/piriformis-syndrome.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/piriformis-syndrome.jpg" alt="ما هي متلازمة العضلة الكمثرية؟" onerror="this.classList.add('miss')">
+          <span class="cat">ألم الظهر</span>
+        </div>
+        <div class="post-body">
+          <h3>ما هي متلازمة العضلة الكمثرية؟</h3>
+          <p>العضلة العميقة في الأرداف التي قد تحاكي عرق النسا — أسباب متلازمة الكمثرية وكيفية علاجها.</p>
+          <div class="post-meta"><span class="dt">21 ديسمبر 2025</span> · اقرأ ←</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="wellness" href="blog-healing-power-of-sleep.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/healing-power-of-sleep.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/healing-power-of-sleep.jpg" alt="قوة النوم الشافية" onerror="this.classList.add('miss')">
+          <span class="cat">العافية</span>
+        </div>
+        <div class="post-body">
+          <h3>قوة النوم الشافية</h3>
+          <p>كيف يشفي النوم الجيّد الدماغ ويقلّل الالتهاب، وأفضل وضعيات النوم للرقبة والظهر.</p>
+          <div class="post-meta"><span class="dt">20 نوفمبر 2025</span> · اقرأ ←</div>
+        </div>
+      </a>
+      <div class="no-results" id="noResults">لا توجد مقالات في هذا التصنيف بعد. تحقّق قريباً.</div>
+  </div>
+
+</div>
+
+<script>
+  const buttons=document.querySelectorAll('.filter-btn');
+  const cards=document.querySelectorAll('.post-card');
+  const noResults=document.getElementById('noResults');
+  const groupHeading=document.getElementById('groupHeading');
+  const HEADINGS={'back-pain':'ألم الظهر','neck-posture':'الرقبة والقوام','wellness':'العافية','treatments':'العلاجات','headaches':'الصداع','scoliosis':'الجنف','all':''};
+  function updateHeading(f){var h=HEADINGS.hasOwnProperty(f)?HEADINGS[f]:'';if(groupHeading){groupHeading.textContent=h;groupHeading.style.display=h?'inline-block':'none';}}
+  buttons.forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      buttons.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter=btn.dataset.filter; updateHeading(filter);
+      let n=0;
+      cards.forEach(c=>{ if(filter==='all'||c.dataset.category===filter){c.classList.remove('hidden');n++;} else {c.classList.add('hidden');} });
+      noResults.style.display=n===0?'block':'none';
+      postHeight(); setTimeout(postHeight,60);
+    });
+  });
+  updateHeading('all');
+  function postHeight(){var h=Math.max(document.documentElement.scrollHeight,document.body.scrollHeight);parent.postMessage({cbpsjHeight:h},'*');}
+  window.addEventListener('load',postHeight);
+  window.addEventListener('resize',postHeight);
+  document.querySelectorAll('img').forEach(function(im){im.addEventListener('load',postHeight);im.addEventListener('error',postHeight);});
+  [200,600,1200,2500].forEach(function(t){setTimeout(postHeight,t);});
+</script>
+</body>
+</html>

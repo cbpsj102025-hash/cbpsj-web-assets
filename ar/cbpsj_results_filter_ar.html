@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>فلتر نتائج المرضى — مركز CBP للعمود الفقري الدقيق</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Cairo', sans-serif; background: #f5f5f5; padding: 40px 20px; direction: rtl; }
+  .results-section { max-width: 1100px; margin: 0 auto; }
+  .results-group { margin-bottom: 60px; }
+  .group-heading { font-size: 22px; font-weight: 700; color: #2C3E45; margin-bottom: 6px; padding-bottom: 10px; border-bottom: 3px solid #16B6BA; display: inline-block; }
+  .group-subheading { font-size: 14px; color: #888; margin-bottom: 28px; margin-top: 6px; }
+  .filter-bar { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 40px; }
+  .filter-btn { padding: 10px 22px; border: 2px solid #16B6BA; border-radius: 30px; background: white; color: #16B6BA; font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+  .filter-btn:hover { background: #e8fafa; }
+  .filter-btn.active { background: #16B6BA; color: white; }
+  .card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 36px; }
+  .result-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .result-card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(0,0,0,0.13); }
+  .result-card.hidden { display: none; }
+  .card-header { background: #2C3E45; color: white; padding: 14px 18px; }
+  .card-header.teal { background: #16B6BA; }
+  .card-meta { font-size: 10px; font-weight: 600; letter-spacing: 0.05em; opacity: 0.75; text-transform: uppercase; margin-bottom: 4px; }
+  .card-title { font-size: 15px; font-weight: 700; line-height: 1.35; }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 16px 0; }
+  .card-tag { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; background: #e8fafa; color: #16B6BA; border: 1px solid #b3e8e9; }
+  .xray-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px; }
+  .xray-panel { text-align: center; }
+  .xray-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: #2C3E45; margin-bottom: 6px; text-transform: uppercase; }
+  .xray-label.after { color: #16B6BA; }
+  .xray-img { width: 100%; border-radius: 8px; display: block; background: #111; }
+  .xray-badge { display: inline-block; background: #e8fafa; color: #16B6BA; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin: 0 16px 12px; border: 1px solid #b3e8e9; }
+  .card-body { padding: 14px 18px 18px; font-size: 13px; color: #444; line-height: 1.7; }
+  .stats-row { display: grid; gap: 8px; padding: 0 16px 16px; }
+  .stats-row-2 { grid-template-columns: 1fr 1fr; }
+  .stats-row-3 { grid-template-columns: repeat(3, 1fr); }
+  .stat-box { background: #f5f5f5; border-radius: 10px; padding: 10px 12px; text-align: center; }
+  .stat-box.highlight { background: #e8fafa; }
+  .stat-label { font-size: 10px; color: #888; font-weight: 600; margin-bottom: 2px; }
+  .stat-value { font-size: 20px; font-weight: 800; color: #2C3E45; }
+  .stat-box.highlight .stat-value { color: #16B6BA; }
+  .table-section { padding: 0 16px 18px; }
+  .table-title { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; color: #888; text-transform: uppercase; margin-bottom: 8px; margin-top: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: #f0f0f0; color: #2C3E45; font-weight: 700; padding: 7px 10px; text-align: right; }
+  td { padding: 6px 10px; border-bottom: 1px solid #f0f0f0; color: #444; text-align: right; }
+  tr:last-child td { border-bottom: none; }
+  .highlight-cell { color: #16B6BA; font-weight: 700; }
+  .neg { color: #e05c5c; font-weight: 700; }
+  @media (max-width: 700px) {
+    body { padding: 24px 12px; }
+    .card-grid { grid-template-columns: 1fr; gap: 24px; }
+    .filter-bar { gap: 7px; }
+    .filter-btn { font-size: 12px; padding: 7px 14px; }
+    .card-body { font-size: 12px; }
+    table { font-size: 11px; }
+    th, td { padding: 5px 7px; }
+    .group-heading { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+<section class="results-section">
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">الكل</button>
+    <button class="filter-btn" data-filter="scoliosis">الجنف</button>
+    <button class="filter-btn" data-filter="scoliosis-brace">دعامة الجنف</button>
+    <button class="filter-btn" data-filter="full-spine">العمود الفقري الكامل</button>
+    <button class="filter-btn" data-filter="cervical">العنق</button>
+    <button class="filter-btn" data-filter="thoracic">الظهر</button>
+    <button class="filter-btn" data-filter="lumbar">أسفل الظهر</button>
+  </div>
+  <div class="results-group">
+    <h2 class="group-heading" id="groupHeading"></h2>
+    <p class="group-subheading" id="groupSub">جميع النتائج تم قياسها باستخدام تصوير الأشعة السينية PostureRay — مُصنَّفة حسب الحالة</p>
+    <div class="card-grid">
+
+      <!-- CASE 01 — SCOLIOSIS BRACE -->
+      <div class="result-card" data-case="brace-case-01" data-categories="scoliosis scoliosis-brace">
+        <div class="card-header teal">
+          <div class="card-meta">حالة الدعامة 01 · الجنف · ScoliBrace · مسقط</div>
+          <div class="card-title">جنف قطني علوي — زاوية كوب 25° ← 6.4° داخل الدعامة خلال شهر واحد</div>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag">دعامة الجنف</span>
+          <span class="card-tag">الجنف</span>
+          <span class="card-tag">العمود الفقري الصدري القطني</span>
+        </div>
+        <div class="xray-compare" style="padding-top:14px;">
+          <div class="xray-panel">
+            <div class="xray-label">قبل الدعامة</div>
+            <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/ialxrawahi_aseelaxalsaltxaflah_30_12_2025_er114apu-SFUUx8x57CZQXZ13.jpg" alt="صورة سينية قبل ScoliBrace — جنف قطني علوي زاوية كوب 25 درجة">
+          </div>
+          <div class="xray-panel">
+            <div class="xray-label after">داخل الدعامة — شهر واحد</div>
+            <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/ialxrawahi_aseelaxalsaltxaflah_14_4_2026_er323apu-5fUcnjWaY2loa0La.jpg" alt="صورة سينية داخل الدعامة — جنف قطني علوي زاوية كوب 6.4 درجة بعد شهر">
+          </div>
+        </div>
+        <div class="xray-badge">نتيجة صورة ScoliBrace السينية داخل الدعامة</div>
+        <div class="card-body">قدمت هذه المريضة إلى مركز CBP للدقة للعمود الفقري في مسقط بجنف قطني علوي مؤكد بتحليل PostureRay. وثّق التصوير قبل الدعامة زاوية كوب 25° مع إزاحة قمة -41.4 ملم يميناً عند مستوى T5-L4 — انحناء ذو أهمية سريرية يستدعي التدخل الهيكلي. بعد تركيب ScoliBrace المخصص بواسطة الدكتور ريتشارد مارشيتي، أثبتت صورة PostureRay داخل الدعامة بعد شهر من الارتداء تراجع زاوية كوب إلى 6.4° وتصحيح إزاحة القمة إلى -7.4 ملم يميناً — تخفيضاً بنسبة 74% في حجم الانحناء و82% في الإزاحة خلال الشهر الأول من الارتداء وحده.</div>
+        <div class="stats-row stats-row-2">
+          <div class="stat-box"><div class="stat-label">زاوية كوب قبل الدعامة</div><div class="stat-value">25°</div></div>
+          <div class="stat-box highlight"><div class="stat-label">زاوية كوب داخل الدعامة</div><div class="stat-value">6.4°</div></div>
+        </div>
+        <div class="stats-row stats-row-2">
+          <div class="stat-box"><div class="stat-label">إزاحة القمة قبل الدعامة</div><div class="stat-value">-41.4 ملم</div></div>
+          <div class="stat-box highlight"><div class="stat-label">إزاحة القمة داخل الدعامة</div><div class="stat-value">-7.4 ملم</div></div>
+        </div>
+        <div class="stats-row stats-row-2" style="padding-bottom:18px;">
+          <div class="stat-box highlight"><div class="stat-label">تخفيض الانحناء</div><div class="stat-value">74%</div></div>
+          <div class="stat-box highlight"><div class="stat-label">مدة الارتداء</div><div class="stat-value">شهر واحد</div></div>
+        </div>
+      </div>
+
+      <!-- CASE 02 — FULL SPINE -->
+      <div class="result-card" data-case="case-02" data-categories="full-spine cervical thoracic lumbar">
+        <div class="card-header">
+          <div class="card-meta">الحالة 02 · تصحيح CBP للعمود الكامل · مسقط · 5 أشهر</div>
+          <div class="card-title">تصحيح هيكلي للعمود الفقري الكامل — ألم أسفل الظهر وخدر الساقين تحسّنا</div>
+        </div>
+        <div class="card-tags">
+          <span class="card-tag">العمود الفقري الكامل</span><span class="card-tag">العنق</span><span class="card-tag">الظهر</span><span class="card-tag">أسفل الظهر</span>
+        </div>
+        <div class="xray-compare" style="padding-top:14px;">
+          <div class="xray-panel">
+            <div class="xray-label">قبل — ديسمبر 2025</div>
+            <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/irajab_munaxali_7_12_2025_er83lf-zFLeAIreUdaO3b0M.jpg" alt="صورة سينية قبل التصحيح — العمود الفقري الكامل">
+          </div>
+          <div class="xray-panel">
+            <div class="xray-label after">بعد — أبريل 2026</div>
+            <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/irajab_munaxali_13_4_2026_er315lf-6t0mW9FOPWpuUpvN.jpg" alt="صورة سينية بعد التصحيح — العمود الفقري الكامل">
+          </div>
+        </div>
+        <div class="card-body">قدم هذا المريض إلى مركز CBP للدقة للعمود الفقري في مسقط بألم مزمن في أسفل الظهر وخدر ينتشر إلى الساقين. أكّد تحليل PostureRay للعمود الفقري الكامل انحرافات هيكلية كبيرة في المناطق العنقية والصدرية والقطنية — كلها خارج نطاق قيم المحاذاة الطبيعية لـ CBP. ركّزت الزيارات الـ12 الأولى على إدارة الألم وتثبيت الجهاز العصبي، تلتها 36 زيارة للتصحيح الهيكلي. بعد 5 أشهر، أظهرت صورة المتابعة تحسناً قابلاً للقياس في المحاذاة في المناطق الثلاث، مع زوال كامل لألم الظهر وخدر الساقين.</div>
+        <div class="table-section">
+          <div class="table-title">زاوية الدوران المطلق (ARA) — الطبيعي مقابل القبل مقابل البعد</div>
+          <table>
+            <thead><tr><th>المنطقة</th><th>الطبيعي</th><th>قبل</th><th>بعد</th></tr></thead>
+            <tbody>
+              <tr><td>العنق</td><td>42°</td><td>-21.8°</td><td class="neg">-22.4°</td></tr>
+              <tr><td>الظهر</td><td>40°</td><td>49.6°</td><td class="highlight-cell">43.4°</td></tr>
+              <tr><td>أسفل الظهر</td><td>40°</td><td>-26.1°</td><td class="neg">-31.4°</td></tr>
+            </tbody>
+          </table>
+          <div class="table-title">المنطقة الانتقالية (TZ) — الطبيعي مقابل القبل مقابل البعد</div>
+          <table>
+            <thead><tr><th>المنطقة</th><th>الطبيعي</th><th>قبل</th><th>بعد</th></tr></thead>
+            <tbody>
+              <tr><td>العنق</td><td>0 ملم</td><td>18.8 ملم</td><td class="neg">25.6 ملم</td></tr>
+              <tr><td>الظهر</td><td>0 ملم</td><td>62.7 ملم خلفي</td><td class="highlight-cell">31.6 ملم خلفي</td></tr>
+              <tr><td>أسفل الظهر</td><td>0 ملم</td><td>36.3 ملم أمامي</td><td class="highlight-cell">24.3 ملم أمامي</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CASE 03 — CERVICAL -->
+      <div class="result-card" data-case="case-03" data-categories="cervical">
+        <div class="card-header">
+          <div class="card-meta">الحالة 03 · تصحيح العمود العنقي CBP · مسقط · 3 أشهر</div>
+          <div class="card-title">تصحيح هيكلي للعمود العنقي — تخفيض ARA من 46.8° إلى 39.0°</div>
+        </div>
+        <div class="card-tags"><span class="card-tag">العنق</span><span class="card-tag">تصحيح CBP</span></div>
+        <div class="xray-compare" style="padding-top:14px;">
+          <div class="xray-panel">
+            <div class="xray-label">قبل — مارس 2026</div>
+            <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/ihamlaoui_abdelxmoumen_2_3_2026_er240lc-4OQepo33Ct2RMXWz.jpg" alt="صورة سينية جانبية للعمود العنقي قبل التصحيح">
+          </div>
+          <div class="xray-panel">
+            <div class="xray-label after">بعد — يونيو 2026</div>
+            <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/ihamlaoui_abdelxmoumen_3_6_2026_er448lc-XBBkA34zF9a7BlPf.jpg" alt="صورة سينية جانبية للعمود العنقي بعد التصحيح">
+          </div>
+        </div>
+        <div class="card-body">تلقّى هذا المريض برنامج تصحيح هيكلي للعمود العنقي وفق منهجية CBP. أثبتت صور PostureRay الجانبية قبل وبعد تحسناً قابلاً للقياس في زاوية الدوران المطلق للعمود العنقي، مع تراجع الإزاحة الأمامية للرأس. التحسينات الهيكلية موثّقة بالأشعة على مدى 3 أشهر من التصحيح المنهجي.</div>
+        <div class="table-section">
+          <div class="table-title">زاوية الدوران المطلق (ARA) العنقي — الطبيعي مقابل القبل مقابل البعد</div>
+          <table>
+            <thead><tr><th>القياس</th><th>الطبيعي</th><th>قبل</th><th>بعد</th></tr></thead>
+            <tbody><tr><td>ARA العنقي</td><td>42°</td><td>46.8°</td><td class="highlight-cell">39.0°</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CASE 04 — FULL SPINE AP -->
+      <div class="result-card" data-case="case-04" data-categories="full-spine lumbar">
+        <div class="card-header">
+          <div class="card-meta">الحالة 04 · تصحيح العمود الكامل CBP · مسقط · 5 أشهر</div>
+          <div class="card-title">العمود الكامل — صورة AP أمامية خلفية قبل وبعد</div>
+        </div>
+        <div class="card-tags"><span class="card-tag">العمود الفقري الكامل</span><span class="card-tag">أسفل الظهر</span></div>
+        <div class="xray-compare" style="padding-top:14px;">
+          <div class="xray-panel">
+            <div class="xray-label">قبل — ديسمبر 2025</div>
+            <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/irajab_munaxali_7_12_2025_er83ll-znKgoVvv0vIm4IzF.jpg" alt="صورة سينية أمامية خلفية للعمود الكامل قبل التصحيح">
+          </div>
+          <div class="xray-panel">
+            <div class="xray-label after">بعد — أبريل 2026</div>
+            <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/irajab_munaxali_13_4_2026_er315ll-L5T9D634Tlvn03tL.jpg" alt="صورة سينية أمامية خلفية للعمود الكامل بعد التصحيح">
+          </div>
+        </div>
+        <div class="card-body">نفس مريض الحالة 02 — الصورة الأمامية الخلفية (AP). يُظهر تحليل PostureRay تحسناً في ميزان الوزن وانحراف العمود الفقري الجانبي في منطقة أسفل الظهر، متزامناً مع نتائج الصورة الجانبية الموثّقة في الحالة 02.</div>
+      </div>
+
+      <!-- CASE 05 — CERVICAL -->
+      <div class="result-card" data-case="case-05" data-categories="cervical">
+        <div class="card-header">
+          <div class="card-meta">الحالة 05 · تصحيح العمود العنقي CBP · مسقط · 10 أسابيع</div>
+          <div class="card-title">تصحيح هيكلي للعمود العنقي — تحسّن في الانحناء والإزاحة الأمامية</div>
+        </div>
+        <div class="card-tags"><span class="card-tag">العنق</span><span class="card-tag">تصحيح CBP</span></div>
+        <div class="xray-compare" style="padding-top:14px;">
+          <div class="xray-panel">
+            <div class="xray-label">قبل — مارس 2026</div>
+            <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/ialxjabri_abdullahxsaifxamur_31_3_2026_er283lc-yZ0JTDfsJvpcecea.jpg" alt="صورة سينية جانبية للعمود العنقي قبل التصحيح">
+          </div>
+          <div class="xray-panel">
+            <div class="xray-label after">بعد — يونيو 2026</div>
+            <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/ialxjabri_abdullahxsaifxamur_7_6_2026_er454lc-TIkYVQjpWksaMO3K.jpg" alt="صورة سينية جانبية للعمود العنقي بعد التصحيح">
+          </div>
+        </div>
+        <div class="card-body">قدم هذا المريض بأعراض عنقية مع إزاحة أمامية للرأس وفقدان في الانحناء الطبيعي للعمود العنقي. بعد برنامج تصحيح CBP لمدة 10 أسابيع شمل التعديلات المرآة والشد العنقي وتمارين التأهيل، أظهرت صور PostureRay المقارنة تحسناً قابلاً للقياس في محاذاة العمود العنقي.</div>
+      </div>
+
+      <!-- CASE 06 — THORACIC -->
+      <div class="result-card" data-case="case-06" data-categories="thoracic">
+        <div class="card-header">
+          <div class="card-meta">الحالة 06 · تصحيح العمود الصدري CBP · مسقط · 6 أسابيع</div>
+          <div class="card-title">تصحيح هيكلي للعمود الصدري — تحسّن ARA الصدري</div>
+        </div>
+        <div class="card-tags"><span class="card-tag">الظهر</span><span class="card-tag">تصحيح CBP</span></div>
+        <div class="xray-compare" style="padding-top:14px;">
+          <div class="xray-panel">
+            <div class="xray-label">قبل — مارس 2026</div>
+            <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/igoubier_sylvian_15_3_2026_er266lt-LKVWFp4bchgfdjPS.jpg" alt="صورة سينية جانبية للعمود الصدري قبل التصحيح">
+          </div>
+          <div class="xray-panel">
+            <div class="xray-label after">بعد — أبريل 2026</div>
+            <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/igoubier_sylvian_27_4_2026_er351lt-bLfJQYtk7IL257e7.jpg" alt="صورة سينية جانبية للعمود الصدري بعد التصحيح">
+          </div>
+        </div>
+        <div class="card-body">قدّم هذا المريض بألم في منطقة الظهر مع شواهد على انحراف في الانحناء الصدري. خلال 6 أسابيع من برنامج التصحيح الهيكلي CBP، أظهرت صور PostureRay للمتابعة تحسناً ملحوظاً في محاذاة العمود الصدري.</div>
+      </div>
+
+      <!-- CASE 07 — SCOLIOSIS BRACE -->
+      <div class="result-card" data-case="case-07" data-categories="scoliosis scoliosis-brace">
+        <div class="card-header teal">
+          <div class="card-meta">الحالة 07 · دعامة الجنف · ScoliBrace · مسقط</div>
+          <div class="card-title">جنف — تقليل زاوية كوب داخل الدعامة</div>
+        </div>
+        <div class="card-tags"><span class="card-tag">دعامة الجنف</span><span class="card-tag">الجنف</span></div>
+        <div class="xray-compare" style="padding-top:14px;">
+          <div class="xray-panel">
+            <div class="xray-label">قبل الدعامة</div>
+            <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/ialxamri_mayarxahmed_19_1_2026_er149apu-kPChWWTg5d1LANVk.jpg" alt="صورة سينية قبل ScoliBrace — جنف">
+          </div>
+          <div class="xray-panel">
+            <div class="xray-label after">داخل الدعامة</div>
+            <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/ialxamri_mayarxahmed_13_4_2026_er314apu-Q9DP5BcXIDZBBniZ.jpg" alt="صورة سينية داخل ScoliBrace — جنف">
+          </div>
+        </div>
+        <div class="xray-badge">نتيجة صورة ScoliBrace السينية داخل الدعامة</div>
+        <div class="card-body">أظهرت صور PostureRay قبل الدعامة وداخلها تخفيضاً ملحوظاً في زاوية كوب عند ارتداء ScoliBrace المخصص المُصمَّم من قِبل الدكتور ريتشارد مارشيتي. التصحيح الهيكلي موثّق بالأشعة ويؤكد فاعلية الدعامة في تقليل الانحناء.</div>
+      </div>
+
+      <!-- CASE 08 — FULL SPINE / LUMBAR -->
+      <div class="result-card" data-case="case-08" data-categories="full-spine lumbar cervical">
+        <div class="card-header">
+          <div class="card-meta">الحالة 08 · تصحيح العمود الكامل CBP · مسقط · 4 أشهر</div>
+          <div class="card-title">تصحيح هيكلي للعمود الكامل — تحسّن في التوازن السهمي وأسفل الظهر</div>
+        </div>
+        <div class="card-tags"><span class="card-tag">العمود الفقري الكامل</span><span class="card-tag">أسفل الظهر</span><span class="card-tag">العنق</span></div>
+        <div class="xray-compare" style="padding-top:14px;">
+          <div class="xray-panel">
+            <div class="xray-label">قبل — فبراير 2026</div>
+            <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/ialxbalushi_naemaxahmed_18_2_2026_er215lf-N1K5eysvEilYdqyS.jpg" alt="صورة سينية جانبية للعمود الكامل قبل التصحيح">
+          </div>
+          <div class="xray-panel">
+            <div class="xray-label after">بعد — يونيو 2026</div>
+            <img class="xray-img" src="https://assets.zyrosite.com/m5KwqPQxePiWkVqL/ialxbalushi_naemaxahmed_14_6_2026_er479lf-RKuwR4ElAs3SN0oS.jpg" alt="صورة سينية جانبية للعمود الكامل بعد التصحيح">
+          </div>
+        </div>
+        <div class="card-body">قدّمت هذه المريضة بألم في أسفل الظهر وأعراض عنقية مع شواهد على انحراف هيكلي متعدد المناطق. خلال 4 أشهر من برنامج التصحيح الهيكلي CBP، أظهرت صور PostureRay الجانبية للمتابعة تحسناً في التوازن السهمي للعمود الفقري الكامل مع تخفيض ملحوظ في إزاحة الوضعية الأمامية.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  const headingMap = {
+    all:               { h: '', sub: 'جميع النتائج تم قياسها باستخدام تصوير الأشعة السينية PostureRay — مُصنَّفة حسب الحالة' },
+    scoliosis:         { h: 'نتائج الجنف', sub: 'حالات الجنف المُقاسة بـ PostureRay قبل وبعد التصحيح الهيكلي' },
+    'scoliosis-brace': { h: 'نتائج دعامة الجنف ScoliBrace', sub: 'صور PostureRay داخل الدعامة وقبلها — جميع الدعامات مُصممة خصيصاً من قِبل الدكتور ريتشارد مارشيتي' },
+    'full-spine':      { h: 'نتائج العمود الفقري الكامل', sub: 'تحليل هيكلي للمناطق العنقية والصدرية والقطنية بـ PostureRay' },
+    cervical:          { h: 'نتائج العمود العنقي', sub: 'تصحيح الانحناء والإزاحة الأمامية للرأس موثّق بالأشعة' },
+    thoracic:          { h: 'نتائج العمود الصدري', sub: 'تحسينات الانحناء الصدري مُقاسة بـ PostureRay' },
+    lumbar:            { h: 'نتائج أسفل الظهر', sub: 'تصحيح الانحناء القطني والتوازن السهمي موثّق بالأشعة' }
+  };
+  const heading = document.getElementById('groupHeading');
+  const sub = document.getElementById('groupSub');
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      const map = headingMap[filter] || headingMap.all;
+      heading.textContent = map.h;
+      sub.textContent = map.sub;
+      document.querySelectorAll('.result-card').forEach(card => {
+        const cats = card.dataset.categories || '';
+        if (filter === 'all' || cats.split(' ').includes(filter)) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    });
+  });
+  function postHeight() {
+    const h = document.body.scrollHeight;
+    window.parent.postMessage({ cbpsjHeight: h }, '*');
+  }
+  window.addEventListener('load', postHeight);
+  window.addEventListener('resize', postHeight);
+  document.querySelectorAll('img').forEach(img => img.addEventListener('load', postHeight));
+  setTimeout(postHeight, 800);
+  setTimeout(postHeight, 2000);
+</script>
+</body>
+</html>

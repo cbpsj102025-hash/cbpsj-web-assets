@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spine Health Blog — Filter</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Inter',sans-serif; background:#f5f5f5; padding:32px 20px; }
+  .blog-section { max-width:1100px; margin:0 auto; }
+  .group-heading { font-size:20px; font-weight:600; color:#2C3E45; margin-bottom:22px; padding-bottom:9px; border-bottom:3px solid #16B6BA; display:none; }
+  html[dir="rtl"] .group-heading { display:none; }
+
+  /* FILTER BAR */
+  .filter-bar { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:34px; }
+  .filter-btn { padding:9px 22px; border-radius:30px; border:1.5px solid #16B6BA; background:#fff; color:#16B6BA;
+    font-size:13px; font-weight:500; cursor:pointer; transition:background .2s,color .2s; font-family:'Inter',sans-serif; }
+  .filter-btn:hover { background:#e6f8f8; }
+  .filter-btn.active { background:#16B6BA; color:#fff; }
+
+  /* GRID */
+  .cards-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:24px; }
+
+  /* CARD — rounded top, flat bottom thumb, category tag upper-start */
+  .post-card { display:flex; flex-direction:column; background:#fff; border:1px solid #e5e5e5; border-radius:14px;
+    overflow:hidden; text-decoration:none; transition:transform .25s,box-shadow .25s,border-color .25s; }
+  .post-card:hover { transform:translateY(-4px); box-shadow:0 18px 40px -22px rgba(12,94,98,.45); border-color:#16B6BA; }
+  .post-card.hidden { display:none; }
+
+  .post-thumb { position:relative; aspect-ratio:16/10; overflow:hidden; background:#eef5f5; }
+  .post-thumb img.thumb { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:1; }
+  .post-thumb img.thumb.miss { display:none; }
+  .post-thumb::after { content:attr(data-label); position:absolute; inset:0; z-index:0; display:flex;
+    align-items:center; justify-content:center; text-align:center; padding:12px;
+    background:linear-gradient(150deg,#0c5e62,#16b6ba); color:rgba(255,255,255,.95);
+    font-size:11px; font-weight:600; letter-spacing:.02em; font-family:monospace; word-break:break-all; }
+  .cat { position:absolute; z-index:2; inset-inline-start:12px; top:12px; font-size:11px; font-weight:700;
+    letter-spacing:.1em; text-transform:uppercase; color:#fff; background:rgba(0,0,0,.30); padding:5px 11px; border-radius:999px; }
+  html[dir="rtl"] .cat { letter-spacing:0; }
+
+  .post-body { padding:16px 18px; display:flex; flex-direction:column; gap:7px; flex:1; }
+  .post-body h3 { margin:0; font-size:16px; font-weight:600; color:#2C3E45; line-height:1.4; }
+  .post-body p { margin:0; font-size:13px; line-height:1.65; color:#555; }
+  .post-meta { margin-top:auto; padding-top:8px; font-size:12px; color:#16B6BA; font-weight:600; }
+
+  .no-results { display:none; grid-column:1 / -1; text-align:center; padding:40px 20px; color:#999; font-size:14px; }
+
+  @media (max-width:700px) {
+    body { padding:20px 12px; }
+    .cards-grid { grid-template-columns:1fr; gap:18px; }
+  }
+</style>
+</head>
+<body>
+<div class="blog-section">
+
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="back-pain">Back Pain</button>
+    <button class="filter-btn" data-filter="neck-posture">Neck &amp; Posture</button>
+    <button class="filter-btn" data-filter="wellness">Wellness</button>
+    <button class="filter-btn" data-filter="treatments">Treatments</button>
+    <button class="filter-btn" data-filter="headaches">Headaches</button>
+    <button class="filter-btn" data-filter="scoliosis">Scoliosis</button>
+  </div>
+
+  <div class="group-heading" id="groupHeading"></div>
+
+  <div class="cards-grid" id="cardsGrid">
+      <a class="post-card" data-category="scoliosis" href="blog-scoliosis-oman-scolibrace.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/scoliosis-oman-scolibrace.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/scoliosis-oman-scolibrace.jpg" alt="Scoliosis in Oman: your complete guide to diagnosis, treatment and ScoliBrace®" onerror="this.classList.add('miss')">
+          <span class="cat">Scoliosis</span>
+        </div>
+        <div class="post-body">
+          <h3>Scoliosis in Oman: diagnosis, treatment &amp; ScoliBrace®</h3>
+          <p>A complete guide for Oman families — non-surgical care, an 8-question FAQ, and how ScoliBrace® bracing works.</p>
+          <div class="post-meta"><span class="dt">25 Jun 2026</span> · Read →</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="wellness" href="blog-silent-spine-destroyer.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/silent-spine-destroyer.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/silent-spine-destroyer.jpg" alt="The silent spine destroyer: vitamin D and your spine" onerror="this.classList.add('miss')">
+          <span class="cat">Wellness</span>
+        </div>
+        <div class="post-body">
+          <h3>The silent spine destroyer: vitamin D and your spine</h3>
+          <p>How vitamin D deficiency quietly affects spinal health across sunny Oman and the GCC — and what to do about it.</p>
+          <div class="post-meta"><span class="dt">15 Jun 2026</span> · Read →</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="back-pain" href="blog-office-back-pain.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/office-back-pain.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/office-back-pain.jpg" alt="Office back pain: how your chair harms your spine" onerror="this.classList.add('miss')">
+          <span class="cat">Back Pain</span>
+        </div>
+        <div class="post-body">
+          <h3>Office back pain: how your chair harms your spine</h3>
+          <p>Why 60% of Gulf office workers suffer low back pain — and what precise CBP care does about it.</p>
+          <div class="post-meta"><span class="dt">4 Jun 2026</span> · Read →</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="scoliosis" href="blog-scoliosis-children.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/scoliosis-children.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/scoliosis-children.jpg" alt="Scoliosis in children: why early screening matters" onerror="this.classList.add('miss')">
+          <span class="cat">Scoliosis</span>
+        </div>
+        <div class="post-body">
+          <h3>Scoliosis in children: why early screening matters</h3>
+          <p>How early detection and advanced ScoliBrace® care can change the course of adolescent scoliosis.</p>
+          <div class="post-meta"><span class="dt">28 May 2026</span> · Read →</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="headaches" href="blog-cervicogenic-migraine.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/cervicogenic-migraine.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/cervicogenic-migraine.jpg" alt="When your migraine actually comes from your neck" onerror="this.classList.add('miss')">
+          <span class="cat">Headaches</span>
+        </div>
+        <div class="post-body">
+          <h3>When your migraine actually comes from your neck</h3>
+          <p>A Muscat guide to cervicogenic headache — and how correcting the neck can change it.</p>
+          <div class="post-meta"><span class="dt">12 May 2026</span> · Read →</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="headaches" href="blog-headache-relief.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/headache-relief.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/headache-relief.jpg" alt="Relieving headaches through gentle spinal care" onerror="this.classList.add('miss')">
+          <span class="cat">Headaches</span>
+        </div>
+        <div class="post-body">
+          <h3>Relieving headaches through gentle spinal care</h3>
+          <p>Effective ways to ease tension headaches with chiropractic care and simple techniques at home.</p>
+          <div class="post-meta"><span class="dt">6 May 2026</span> · Read →</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="neck-posture" href="blog-tech-neck.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/tech-neck.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/tech-neck.jpg" alt="Tech neck in Muscat: how your phone reshapes your spine" onerror="this.classList.add('miss')">
+          <span class="cat">Neck &amp; Posture</span>
+        </div>
+        <div class="post-body">
+          <h3>Tech neck in Muscat: how your phone reshapes your spine</h3>
+          <p>What forward head posture does to the spine — and what you can do about it.</p>
+          <div class="post-meta"><span class="dt">25 Apr 2026</span> · Read →</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="neck-posture" href="blog-sleep-spine.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/sleep-spine.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/sleep-spine.jpg" alt="Sleep and your spine: how your pillow affects recovery" onerror="this.classList.add('miss')">
+          <span class="cat">Neck &amp; Posture</span>
+        </div>
+        <div class="post-body">
+          <h3>Sleep and your spine: how your pillow affects recovery</h3>
+          <p>How the right sleep ergonomics support CBP correction and overnight recovery.</p>
+          <div class="post-meta"><span class="dt">14 Apr 2026</span> · Read →</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="back-pain" href="blog-back-pain-returns.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/back-pain-returns.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/back-pain-returns.jpg" alt="Why your back pain returns after work" onerror="this.classList.add('miss')">
+          <span class="cat">Back Pain</span>
+        </div>
+        <div class="post-body">
+          <h3>Why your back pain returns after work</h3>
+          <p>One of the most common complaints we see — and the ideal long-term solution for it.</p>
+          <div class="post-meta"><span class="dt">8 Apr 2026</span> · Read →</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="back-pain" href="blog-herniated-disc.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/herniated-disc.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/herniated-disc.jpg" alt="Herniated disc in Muscat? Read this before surgery" onerror="this.classList.add('miss')">
+          <span class="cat">Back Pain</span>
+        </div>
+        <div class="post-body">
+          <h3>Herniated disc in Muscat? Read this before surgery</h3>
+          <p>International guidelines recommend conservative care first. What non-surgical disc treatment looks like at CBP.</p>
+          <div class="post-meta"><span class="dt">2 Apr 2026</span> · Read →</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="wellness" href="blog-summer-heat-spine.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/summer-heat-spine.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/summer-heat-spine.jpg" alt="Why your spine suffers in the Gulf summer heat" onerror="this.classList.add('miss')">
+          <span class="cat">Wellness</span>
+        </div>
+        <div class="post-body">
+          <h3>Why your spine suffers in the Gulf summer heat</h3>
+          <p>The hidden link between dehydration and back pain — and why summer brings more disc trouble in Muscat.</p>
+          <div class="post-meta"><span class="dt">20 Mar 2026</span> · Read →</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="back-pain" href="blog-chiropractic-back-pain.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/chiropractic-back-pain.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/chiropractic-back-pain.jpg" alt="Chiropractic care: the ideal solution for back pain" onerror="this.classList.add('miss')">
+          <span class="cat">Back Pain</span>
+        </div>
+        <div class="post-body">
+          <h3>Chiropractic care: the ideal solution for back pain</h3>
+          <p>How spinal correction offers a natural, lasting answer to back pain — beyond painkillers and quick fixes.</p>
+          <div class="post-meta"><span class="dt">18 Mar 2026</span> · Read →</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="wellness" href="blog-pregnancy-back-pain.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/pregnancy-back-pain.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/pregnancy-back-pain.jpg" alt="Why 8 in 10 pregnant women in Muscat get back pain" onerror="this.classList.add('miss')">
+          <span class="cat">Wellness</span>
+        </div>
+        <div class="post-body">
+          <h3>Why 8 in 10 pregnant women in Muscat get back pain</h3>
+          <p>The truth about pregnancy-related spine problems — and how gentle CBP care supports expectant mothers.</p>
+          <div class="post-meta"><span class="dt">12 Mar 2026</span> · Read →</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="neck-posture" href="blog-neck-pain-cervical.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/neck-pain-cervical.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/neck-pain-cervical.jpg" alt="Understanding neck pain and cervical misalignment" onerror="this.classList.add('miss')">
+          <span class="cat">Neck &amp; Posture</span>
+        </div>
+        <div class="post-body">
+          <h3>Understanding neck pain and cervical misalignment</h3>
+          <p>How biophysics-based spinal correction can help with chronic neck pain and cervical shifts.</p>
+          <div class="post-meta"><span class="dt">22 Feb 2026</span> · Read →</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="treatments" href="blog-medical-massage.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/medical-massage.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/medical-massage.jpg" alt="Medical massage vs relaxation massage" onerror="this.classList.add('miss')">
+          <span class="cat">Treatments</span>
+        </div>
+        <div class="post-body">
+          <h3>Medical massage vs relaxation massage</h3>
+          <p>Why medical massage delivers deeper, longer-lasting results than a standard relaxation session.</p>
+          <div class="post-meta"><span class="dt">10 Feb 2026</span> · Read →</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="treatments" href="blog-foot-pain-orthotics.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/foot-pain-orthotics.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/foot-pain-orthotics.jpg" alt="Foot pain in Muscat: why custom Sole Supports® orthotics" onerror="this.classList.add('miss')">
+          <span class="cat">Treatments</span>
+        </div>
+        <div class="post-body">
+          <h3>Foot pain in Muscat: why custom Sole Supports® orthotics</h3>
+          <p>How custom orthotics deliver lasting relief — not just a temporary fix — for foot and spine alignment.</p>
+          <div class="post-meta"><span class="dt">6 Jan 2026</span> · Read →</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="back-pain" href="blog-piriformis-syndrome.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/piriformis-syndrome.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/piriformis-syndrome.jpg" alt="What is piriformis syndrome?" onerror="this.classList.add('miss')">
+          <span class="cat">Back Pain</span>
+        </div>
+        <div class="post-body">
+          <h3>What is piriformis syndrome?</h3>
+          <p>The deep buttock muscle that can mimic sciatica — what causes piriformis syndrome and how it's treated.</p>
+          <div class="post-meta"><span class="dt">21 Dec 2025</span> · Read →</div>
+        </div>
+      </a>
+      <a class="post-card" data-category="wellness" href="blog-healing-power-of-sleep.html" target="_parent">
+        <div class="post-thumb" data-label="blog-images/healing-power-of-sleep.jpg">
+          <img class="thumb" loading="lazy" src="/blog-images/healing-power-of-sleep.jpg" alt="The healing power of sleep" onerror="this.classList.add('miss')">
+          <span class="cat">Wellness</span>
+        </div>
+        <div class="post-body">
+          <h3>The healing power of sleep</h3>
+          <p>How quality sleep heals the brain, lowers inflammation, and the best sleeping postures for neck and back.</p>
+          <div class="post-meta"><span class="dt">20 Nov 2025</span> · Read →</div>
+        </div>
+      </a>
+      <div class="no-results" id="noResults">No articles in this category yet. Check back soon.</div>
+  </div>
+
+</div>
+
+<script>
+  const buttons=document.querySelectorAll('.filter-btn');
+  const cards=document.querySelectorAll('.post-card');
+  const noResults=document.getElementById('noResults');
+  const groupHeading=document.getElementById('groupHeading');
+  const HEADINGS={'back-pain':'Back Pain','neck-posture':'Neck &amp; Posture','wellness':'Wellness','treatments':'Treatments','headaches':'Headaches','scoliosis':'Scoliosis','all':''};
+  function updateHeading(f){var h=HEADINGS.hasOwnProperty(f)?HEADINGS[f]:'';if(groupHeading){groupHeading.textContent=h;groupHeading.style.display=h?'inline-block':'none';}}
+  buttons.forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      buttons.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter=btn.dataset.filter; updateHeading(filter);
+      let n=0;
+      cards.forEach(c=>{ if(filter==='all'||c.dataset.category===filter){c.classList.remove('hidden');n++;} else {c.classList.add('hidden');} });
+      noResults.style.display=n===0?'block':'none';
+      postHeight(); setTimeout(postHeight,60);
+    });
+  });
+  updateHeading('all');
+  function postHeight(){var h=Math.max(document.documentElement.scrollHeight,document.body.scrollHeight);parent.postMessage({cbpsjHeight:h},'*');}
+  window.addEventListener('load',postHeight);
+  window.addEventListener('resize',postHeight);
+  document.querySelectorAll('img').forEach(function(im){im.addEventListener('load',postHeight);im.addEventListener('error',postHeight);});
+  [200,600,1200,2500].forEach(function(t){setTimeout(postHeight,t);});
+</script>
+</body>
+</html>
